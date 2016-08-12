@@ -15,7 +15,7 @@
     "watchify": "^3.7.0"
   },
   "scripts": {
-    "build": "browserify -t [babelify] -o build.js src/**",
-    "watch": "watchify -d -v -t [babelify] -o build.js src/**"
+    "build": "browserify -t [babelify] -o build.js src/",
+    "watch": "watchify -d -v -t [babelify] -o build.js src/"
   }
 }
