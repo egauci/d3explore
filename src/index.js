@@ -21,7 +21,7 @@ const svg = d3.select('#d3-target').append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    .attr('transform', `translate(${margin.left},${margin.top})`);
 
 x.domain(data.map(d => d.letter))
   .paddingInner(0.1)
@@ -30,7 +30,7 @@ y.domain([0, d3.max(data, d => d.frequency)]);
 
 svg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
+      .attr('transform', `translate(0,${height})`)
       .call(xAxis);
 
 svg.append('g')
@@ -41,6 +41,7 @@ svg.append('g')
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
+      .style('fill', 'black')
       .text('Frequency');
 
 svg.selectAll('.bar')
