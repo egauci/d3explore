@@ -10,6 +10,10 @@ h1 {
   margin-bottom: 2em;
 }
 
+.mainmenu li {
+  padding: 5px 0;
+}
+
 .chart-1 .bar {
   fill: steelblue;
 }

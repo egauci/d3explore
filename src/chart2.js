@@ -53,6 +53,10 @@ export default function () {
         .attr('class', 'bar')
         .attr('x', d => x(d.letter))
         .attr('width', x.bandwidth())
+        .attr('y', height)
+        .transition()
+        .duration(200)
+        .delay((d, i) => i * 20)
         .attr('y', d => y(d.frequency))
         .attr('height', d => height - y(d.frequency));
 }

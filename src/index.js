@@ -1,4 +1,6 @@
 import chart1 from './chart1';
+import chart2 from './chart2';
+import chart3 from './chart3';
 
 // menu comonent
 
@@ -9,11 +11,15 @@ function handleMenuClick(e) {
     return;
   }
   e.preventDefault();
-  const d3target = document.querySelector('#d3-target');
   switch (e.target.dataset.id) {
   case '1':
-    d3target.innerHTML = '';
     chart1();
+    break;
+  case '2':
+    chart2();
+    break;
+  case '3':
+    chart3();
     break;
   default:
     throw new Error('unrecognized menu selection');
