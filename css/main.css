@@ -33,6 +33,49 @@ h1 {
   shape-rendering: crispEdges;
 }
 
-.chart-1 .x.axis path {
+.chart-1:NOT(.line-1) .x.axis path {
   display: none;
+}
+
+.available-line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.ledger-line {
+  fill: none;
+  stroke: darkorange;
+  stroke-width: 2px;
+}
+
+.booked-line {
+  fill: none;
+  stroke: purple;
+  stroke-width: 2px
+}
+
+.legend-line {
+  stroke-width: 0;
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  fill: black;
+}
+
+.available-symbol {
+  fill: steelblue;
+}
+
+.booked-symbol {
+  fill: purple;
+}
+
+.ledger-symbol {
+  fill: darkorange;
+}
+
+.line-1 .legend-rect {
+  fill: none;
+  stroke: lightblue;
+  stroke-width: 2px;
 }
