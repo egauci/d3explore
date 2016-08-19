@@ -23,7 +23,6 @@ export default function () {
     ;
 
   const xAxis = d3.axisBottom(x)
-    // .ticks(d3.timeDay.every(1))
     .tickFormat(d3.timeFormat('%b %d'))
     ;
 
@@ -54,13 +53,13 @@ export default function () {
     .x(d => x(d.date))
     .y(d => y(d.booked));
 
-  const dataMap = [
+  const itemList = [
     {lineClass: 'available-line', symClass: 'available-symbol', line: availableLine,
-                   sym: d3.symbolSquare, val: 'available', label: 'Open Available'},
+                   sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
     {lineClass: 'ledger-line', symClass: 'ledger-symbol', line: ledgerLine,
-                   sym: d3.symbolTriangle, val: 'ledger', label: 'Closing Ledger'},
+                   sym: d3.symbolTriangle, dataKey: 'ledger', label: 'Closing Ledger'},
     {lineClass: 'booked-line', symClass: 'booked-symbol', line: bookedLine,
-                   sym: d3.symbolCircle, val: 'booked', label: 'Closing Collected'}
+                   sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'}
   ];
 
   const svgTop = d3.select('#d3-target')
@@ -91,22 +90,22 @@ export default function () {
         ;
     legend.append('g')
       .selectAll('.legend-line')
-        .data(dataMap)
+        .data(itemList)
         .enter().append('g')
           .attr('class', 'legend-line')
             .append('text')
               .attr('transform', (d, i) => `translate(${left + 160}, ${20 * (i + 1)})`)
-              .text(d => d3.format('10,.2f')(val[d.val]) + ' USD')
+              .text(d => d3.format('10,.2f')(val[d.dataKey]) + ' USD')
     ;
     legend.selectAll('.legend-line')
-      .data(dataMap)
+      .data(itemList)
       .append('path')
         .attr('transform', (d, i) => `translate(${left + 20}, ${20 * (i + 1) - 5})`)
         .attr('class', d => d.symClass)
         .attr('d', d => d3.symbol().type(d.sym).size(100)())
       ;
     legend.selectAll('.legend-line')
-      .data(dataMap)
+      .data(itemList)
       .append('text')
         .attr('transform', (d, i) => `translate(${left + 35}, ${20 * (i + 1)})`)
         .text(d => d.label)
@@ -128,20 +127,20 @@ export default function () {
     }
   };
 
-  dataMap.forEach(({lineClass: cls, line}) => {
+  itemList.forEach(({lineClass: cls, line}) => {
     svg.append('path')
       .data([data])
       .attr('class', cls)
       .attr('d', line);
   });
 
-  dataMap.forEach(({symClass: cls, sym, val}) => {
+  itemList.forEach(({symClass: cls, sym, dataKey}) => {
     svg.selectAll(cls)
       .data(data)
       .enter().append('path')
       .attr('class', cls)
       .attr('d', d3.symbol().type(sym).size(100))
-      .attr('transform', d => `translate(${x(d.date)}, ${y(d[val])})`)
+      .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
       .on('mouseenter', showLegend)
       .on('mouseleave', hideLegend)
       ;
