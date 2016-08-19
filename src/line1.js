@@ -93,7 +93,7 @@ export default function () {
       .selectAll('.legend-line')
         .data(dataMap)
         .enter().append('g')
-          .attr('class', d => `legend-line ${d.lineClass}`)
+          .attr('class', 'legend-line')
             .append('text')
               .attr('transform', (d, i) => `translate(${left + 160}, ${20 * (i + 1)})`)
               .text(d => d3.format('10,.2f')(val[d.val]) + ' USD')
@@ -140,11 +140,10 @@ export default function () {
       .data(data)
       .enter().append('path')
       .attr('class', cls)
-      .attr('data-ix', (d, i) => String(i))
       .attr('d', d3.symbol().type(sym).size(100))
       .attr('transform', d => `translate(${x(d.date)}, ${y(d[val])})`)
       .on('mouseenter', showLegend)
-      .on('mouseleave', hideLegend.bind(null, val))
+      .on('mouseleave', hideLegend)
       ;
   });
 
