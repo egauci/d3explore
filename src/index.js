@@ -3,6 +3,7 @@ import chart2 from './chart2';
 import chart3 from './chart3';
 import chart4 from './chart4';
 import line1 from './line1';
+import bar1 from './bar1';
 
 // menu comonent
 
@@ -13,7 +14,8 @@ const components = {
   2: chart2,
   3: chart3,
   4: chart4,
-  5: line1
+  5: line1,
+  6: bar1
 };
 
 function handleMenuClick(e) {
