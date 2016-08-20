@@ -47,7 +47,7 @@ export default function () {
 
 
   const itemList = [
-    {lsymClass: 'available-symbol',
+    {symClass: 'available-symbol',
                    sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
     {symClass: 'ledger-symbol',
                    sym: d3.symbolSquare, dataKey: 'ledger', label: 'Closing Ledger'},
