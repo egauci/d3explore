@@ -8,6 +8,8 @@ export default function () {
   const amtMax = 50000000;
   const days = 7;
 
+// use the same data source as line1, however bars work better with scaleBand rather than
+// the continuous timeBand. Convert the date property to String.
   const timeFmt = d3.timeFormat('%b %d');
   const data = getData({days, min: amtMin, max: amtMax}).map(d => Object.assign(d, {date: timeFmt(d.date)}));
 
@@ -15,13 +17,13 @@ export default function () {
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+// x0 is the main x axis, with one band per day
   const x0 = d3.scaleBand()
     .range([0, width], 0.1)
     .domain(data.map(d => d.date))
-    // .paddingInner(0.2)
-    // .paddingOuter(0.2)
     ;
 
+// The x1 scale is for each group of three
   const x1 = d3.scaleBand()
     .domain(['steelblue', 'darkorange', 'purple'])
     .paddingOuter(0.1)
@@ -41,18 +43,16 @@ export default function () {
   document.querySelector('#d3-target').innerHTML = '';
 
   x1.range([0, width / data.length]);
+
   y.domain([
     Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked))),
     Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)))]);
 
 
   const itemList = [
-    {symClass: 'available-symbol',
-                   sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
-    {symClass: 'ledger-symbol',
-                   sym: d3.symbolSquare, dataKey: 'ledger', label: 'Closing Ledger'},
-    {symClass: 'booked-symbol',
-                   sym: d3.symbolSquare, dataKey: 'booked', label: 'Closing Collected'}
+    {symClass: 'available-symbol', sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
+    {symClass: 'ledger-symbol', sym: d3.symbolSquare, dataKey: 'ledger', label: 'Closing Ledger'},
+    {symClass: 'booked-symbol', sym: d3.symbolSquare, dataKey: 'booked', label: 'Closing Collected'}
   ];
 
   const svgTop = d3.select('#d3-target')
