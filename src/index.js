@@ -3,6 +3,7 @@ import chart2 from './chart2';
 import chart3 from './chart3';
 import chart4 from './chart4';
 import line1 from './line1';
+import line2 from './line2';
 import bar1 from './bar1';
 
 // menu comonent
@@ -15,7 +16,8 @@ const components = {
   3: chart3,
   4: chart4,
   5: line1,
-  6: bar1
+  6: bar1,
+  7: line2
 };
 
 function handleMenuClick(e) {
@@ -25,6 +27,7 @@ function handleMenuClick(e) {
   e.preventDefault();
   const key = e.target.dataset.id;
   if (components[key]) {
+    line2(stop);
     components[key]();
   } else {
     throw new Error('unrecognized menu selection');

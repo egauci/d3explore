@@ -4,7 +4,8 @@
   "description": "Explore D3js",
   "dependencies": {
     "d3": "^4.2.1",
-    "moment": "^2.14.1"
+    "moment": "^2.14.1",
+    "viewport-event": "^1.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",

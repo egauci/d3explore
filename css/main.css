@@ -39,19 +39,19 @@ h1 {
 
 .available-line {
   fill: none;
-  stroke: steelblue;
+  stroke: rgb(108, 84, 161);
   stroke-width: 2px;
 }
 
 .ledger-line {
   fill: none;
-  stroke: darkorange;
+  stroke: rgb(128, 0, 85);
   stroke-width: 2px;
 }
 
 .booked-line {
   fill: none;
-  stroke: purple;
+  stroke: rgb(72, 128, 116);
   stroke-width: 2px
 }
 
@@ -63,19 +63,23 @@ h1 {
 }
 
 .available-symbol {
-  fill: steelblue;
+  fill: rgb(108, 84, 161);
 }
 
 .booked-symbol {
-  fill: purple;
+  fill: rgb(72, 128, 116);
 }
 
 .ledger-symbol {
-  fill: darkorange;
+  fill: rgb(128, 0, 85);
 }
 
 .line-1 .legend-rect {
   fill: none;
   stroke: lightblue;
   stroke-width: 2px;
+}
+
+.chart-1.line-1.line-2 {
+  border: 1px solid #ddd;
 }
