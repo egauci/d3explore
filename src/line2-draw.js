@@ -9,14 +9,11 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
 
   const x = d3.scaleTime()
     .range([0, width])
+    .domain(d3.extent(data.map(d => d.date)))
     ;
 
   const y = d3.scaleLinear()
     .range([height, 0])
-    ;
-
-  const xAxis = d3.axisBottom(x)
-    .tickFormat(d3.timeFormat('%b %d'))
     ;
 
   let interval = 1;
@@ -24,7 +21,12 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
     interval += 1;
   }
 
-  xAxis.ticks(d3.timeDay.every(interval));
+  const xValues = data.filter((d, i) => i % interval === 0).map(d => d.date);
+
+  const xAxis = d3.axisBottom(x)
+    .tickFormat(d3.timeFormat('%b %d'))
+    .tickValues(xValues)
+    ;
 
   const yAxis = d3.axisLeft(y)
     .tickFormat(d3.formatPrefix('.0', 1000000))
@@ -32,7 +34,6 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
 
   document.querySelector('#d3-target').innerHTML = '';
 
-  x.domain(d3.extent(data.map(d => d.date)));
   y.domain([
     Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked))),
     Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)))]);
