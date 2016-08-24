@@ -27,7 +27,7 @@ function handleMenuClick(e) {
   e.preventDefault();
   const key = e.target.dataset.id;
   if (components[key]) {
-    line2(stop);
+    line2(true);
     components[key]();
   } else {
     throw new Error('unrecognized menu selection');

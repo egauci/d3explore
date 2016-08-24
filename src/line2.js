@@ -8,7 +8,7 @@ export default function(stop) {
 
   const amtMin = 10000000;
   const amtMax = 50000000;
-  const days = 7;
+  const days = 30;
 
   const data = getData({days, min: amtMin, max: amtMax});
 

@@ -19,9 +19,12 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
     .tickFormat(d3.timeFormat('%b %d'))
     ;
 
-  if (days < 10) {
-    xAxis.ticks(d3.timeDay.every(1));
+  let interval = 1;
+  while (width / (days - 1) * interval < 60) {
+    interval += 1;
   }
+
+  xAxis.ticks(d3.timeDay.every(interval));
 
   const yAxis = d3.axisLeft(y)
     .tickFormat(d3.formatPrefix('.0', 1000000))
@@ -151,16 +154,13 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
   let last = -1;
   const getXoffset = function(vp) {
     xoffset = margin.left - vp.scrollX;
-    // console.log('xoffset: ', xoffset);
     const half = width / (data.length - 1) / 2;
     buckets = data.map((d, i) => i < (data.length - 1) ? x(d.date) + half : 10000);
-    // console.log(buckets);
   };
   getXoffset(viewport.getViewport());
   viewport.on('viewport', getXoffset);
   domsvg.addEventListener('mousemove', e => {
     const pos = e.clientX - xoffset;
-    // console.log(pos);
     buckets.some((v, i) => {
       if (pos < v) {
         if (i !== last) {
@@ -172,7 +172,5 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
       return false;
     });
   });
-
-  data.forEach(m => console.log(m.date, x(m.date)));
 
 }
