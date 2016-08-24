@@ -132,7 +132,7 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
 
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
     svg.selectAll(cls)
-      .data(targetWidth >= 500 ? data : [data[0], data[data.length - 1]])
+      .data(targetWidth >= 600 ? data : [data[0], data[data.length - 1]])
       .enter().append('path')
       .attr('class', cls)
       .attr('d', d3.symbol().type(sym).size(100))

@@ -27,6 +27,8 @@ export default function(stop) {
       targetWidth = 600;
     } else if (winWidth > 500) {
       targetWidth = 500;
+    } else if (winWidth > 400) {
+      targetWidth = 400;
     } else {
       targetWidth = 320;
     }
