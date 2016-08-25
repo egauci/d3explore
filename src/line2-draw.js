@@ -1,9 +1,11 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
 
-export default function(targetWidth, {amtMin, amtMax, days, data}) {
+let oldListener;
 
-  const margin = {top: 80, right: 20, bottom: 30, left: 40},
+export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
+
+  const margin = {top: 100, right: 20, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -31,8 +33,6 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
   const yAxis = d3.axisLeft(y)
     .tickFormat(d3.formatPrefix('.0', 1000000))
     ;
-
-  document.querySelector('#d3-target').innerHTML = '';
 
   y.domain([
     Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked))),
@@ -71,9 +71,11 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
 
   let legend;
 
+  const legendTimeFmt = d3.timeFormat('%B %e');
+
   const showLegend = function(val) {
     const legendWidth = 300;
-    const legendHeight = 70;
+    const legendHeight = 90;
     let left = Math.max(0, x(val.date) + margin.left - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
     legend = svgTop.append('g')
@@ -86,23 +88,29 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
         .attr('transform', `translate(${left}, 0)`)
         ;
     legend.append('g')
+      .attr('class', 'legend-dateline')
+      .append('text')
+        .attr('transform', `translate(${left + 37}, 20)`)
+        .text(legendTimeFmt(val.date))
+        ;
+    legend.append('g')
       .selectAll('.legend-line')
         .data(itemList)
         .enter().append('g')
           .attr('class', 'legend-line')
             .append('text')
-              .attr('transform', (d, i) => `translate(${left + 160}, ${20 * (i + 1)})`)
+              .attr('transform', (d, i) => `translate(${left + 160}, ${20 * (i + 2)})`)
               .text(d => d3.format('10,.2f')(val[d.dataKey]) + ' USD')
     ;
     legend.selectAll('.legend-line')
       .append('path')
-        .attr('transform', (d, i) => `translate(${left + 20}, ${20 * (i + 1) - 5})`)
+        .attr('transform', (d, i) => `translate(${left + 20}, ${20 * (i + 2) - 5})`)
         .attr('class', d => d.symClass)
         .attr('d', d => d3.symbol().type(d.sym).size(100)())
       ;
     legend.selectAll('.legend-line')
       .append('text')
-        .attr('transform', (d, i) => `translate(${left + 35}, ${20 * (i + 1)})`)
+        .attr('transform', (d, i) => `translate(${left + 35}, ${20 * (i + 2)})`)
         .text(d => d.label)
       ;
     legend.append('line')
@@ -122,22 +130,26 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
     }
   };
 
-  itemList.forEach(({lineClass: cls, line}) => {
-    svg.append('path')
-      .data([data])
-      .attr('class', cls)
-      .attr('d', line)
-      ;
+  itemList.forEach(({lineClass: cls, line, dataKey}) => {
+    if (types.get(dataKey).checked) {
+      svg.append('path')
+        .data([data])
+        .attr('class', cls)
+        .attr('d', line)
+        ;
+    }
   });
 
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
-    svg.selectAll(cls)
-      .data(targetWidth >= 600 ? data : [data[0], data[data.length - 1]])
-      .enter().append('path')
-      .attr('class', cls)
-      .attr('d', d3.symbol().type(sym).size(100))
-      .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
-      ;
+    if (types.get(dataKey).checked) {
+      svg.selectAll(cls)
+        .data(width / (days - 1) > 20 ? data : [data[0], data[data.length - 1]])
+        .enter().append('path')
+        .attr('class', cls)
+        .attr('d', d3.symbol().type(sym).size(100))
+        .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
+        ;
+    }
   });
 
   svg.append('g')
@@ -158,6 +170,12 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
     const half = width / (data.length - 1) / 2;
     buckets = data.map((d, i) => i < (data.length - 1) ? x(d.date) + half : 10000);
   };
+
+  if (oldListener) {
+    viewport.removeListener('viewport', oldListener);
+  }
+  oldListener = getXoffset;
+
   getXoffset(viewport.getViewport());
   viewport.on('viewport', getXoffset);
 

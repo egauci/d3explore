@@ -1,6 +1,8 @@
 import viewport from 'viewport-event';
 import line2Draw from './line2-draw';
 import getData from './tirdata';
+import {tirSelection, types, period} from './helpers';
+
 
 export default function(stop) {
   let targetWidth;
@@ -8,12 +10,25 @@ export default function(stop) {
 
   const amtMin = 10000000;
   const amtMax = 50000000;
-  const days = 30;
+  const maxDays = 90;
 
-  const data = getData({days, min: amtMin, max: amtMax});
+  const data = getData({maxDays, min: amtMin, max: amtMax});
 
   const draw = () => {
-    line2Draw(targetWidth, {amtMin, amtMax, days, data});
+    document.querySelector('#d3-target').innerHTML = '';
+    const options = document.createElement('div');
+    options.id = 'chart-options';
+    options.className = 'chart-options';
+    document.querySelector('#d3-target').appendChild(options);
+    let days = Math.min(period, maxDays);
+
+    tirSelection(options, () => {
+      const svg = document.querySelector('#d3-target > svg:first-of-type');
+      svg.parentElement.removeChild(svg);
+      days = Math.min(period, maxDays);
+      line2Draw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+    });
+    line2Draw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
   };
   const getWidth = vp => {
     const winWidth = vp.clientWidth;

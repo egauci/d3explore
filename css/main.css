@@ -83,3 +83,22 @@ h1 {
 .chart-1.line-1.line-2 {
   border: 1px solid #ddd;
 }
+
+.chart-options > div {
+  padding: 10px;
+  border-bottom: 1px solid lightgray;
+}
+
+.chart-options > div:last-child {
+  border-bottom-width: 0;
+}
+
+.tir-checkboxes li {
+  display: inline-block;
+  padding: 6px 10px;
+}
+
+h2 {
+  font-weight: bold;
+  margin: 10px 0;
+}
