@@ -160,7 +160,13 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
   };
   getXoffset(viewport.getViewport());
   viewport.on('viewport', getXoffset);
+
+  const mainChart = document.querySelector('svg > g:first-child');
+
   domsvg.addEventListener('mousemove', e => {
+    if (e.clientY < mainChart.getBoundingClientRect().top) {
+      return;
+    }
     const pos = e.clientX - xoffset;
     buckets.some((v, i) => {
       if (pos < v) {
@@ -173,5 +179,7 @@ export default function(targetWidth, {amtMin, amtMax, days, data}) {
       return false;
     });
   });
+
+  showLegend(data[0]);
 
 }
