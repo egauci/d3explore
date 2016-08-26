@@ -64,10 +64,35 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
       .attr('class', 'chart-1 line-1 line-2')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
+      .style('background', '#f8f8f8')
       ;
+
+  // the "down-line" from the legend to the Y axis. Draw it here so it is
+  // behind the chart.
+  const legLine = svgTop.append('line')
+    .attr('x1', 0)
+    .attr('x2', 0)
+    .attr('y1', 0)
+    .attr('y2', 0)
+    .attr('stroke', 'lightblue')
+    .attr('stroke-width', 2)
+    .attr('opacity', 0)
+  ;
+
   const svg = svgTop
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const mouseDown = () => { // dim "other" lines
+    const notincluded = d3.event.target.getAttribute('data-type');
+    d3.selectAll(`.chart-line:NOT([data-type="${notincluded}"])`)
+      .style('opacity', 0.3);
+  };
+
+  const mouseUp = () => {
+    d3.selectAll('.chart-line')
+      .style('opacity', 1);
+  };
 
   let legend;
 
@@ -107,19 +132,20 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
         .attr('transform', (d, i) => `translate(${left + 20}, ${20 * (i + 2) - 5})`)
         .attr('class', d => d.symClass)
         .attr('d', d => d3.symbol().type(d.sym).size(100)())
+        .attr('data-type', d => d.dataKey)
+        .on('mousedown', mouseDown)
+        .on('mouseup', mouseUp)
       ;
     legend.selectAll('.legend-line')
       .append('text')
         .attr('transform', (d, i) => `translate(${left + 35}, ${20 * (i + 2)})`)
         .text(d => d.label)
       ;
-    legend.append('line')
+    legLine.attr('opacity', 1)
       .attr('x1', x(val.date) + margin.left)
       .attr('x2', x(val.date) + margin.left)
       .attr('y1', legendHeight)
       .attr('y2', height + margin.top)
-      .attr('stroke', 'lightblue')
-      .attr('stroke-width', 2)
     ;
   };
 
@@ -127,15 +153,21 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
     if (legend) {
       legend.remove();
       legend = null;
+      legLine.attr('opacity', 0);
     }
   };
+
+  showLegend(data[0]);
 
   itemList.forEach(({lineClass: cls, line, dataKey}) => {
     if (types.get(dataKey).checked) {
       svg.append('path')
         .data([data])
-        .attr('class', cls)
+        .attr('class', `${cls} chart-line`)
+        .attr('data-type', dataKey)
         .attr('d', line)
+        .on('mousedown', mouseDown)
+        .on('mouseup', mouseUp)
         ;
     }
   });
@@ -148,6 +180,9 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
         .attr('class', cls)
         .attr('d', d3.symbol().type(sym).size(100))
         .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
+        .attr('data-type', dataKey)
+        .on('mousedown', mouseDown)
+        .on('mouseup', mouseUp)
         ;
     }
   });
@@ -179,7 +214,7 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
   getXoffset(viewport.getViewport());
   viewport.on('viewport', getXoffset);
 
-  const mainChart = document.querySelector('svg > g:first-child');
+  const mainChart = document.querySelector('svg > g:first-of-type');
 
   domsvg.addEventListener('mousemove', e => {
     if (e.clientY < mainChart.getBoundingClientRect().top) {
@@ -197,7 +232,5 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
       return false;
     });
   });
-
-  showLegend(data[0]);
 
 }
