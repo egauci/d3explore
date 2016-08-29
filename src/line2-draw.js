@@ -135,6 +135,8 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
         .attr('data-type', d => d.dataKey)
         .on('mousedown', mouseDown)
         .on('mouseup', mouseUp)
+        .on('touchstart', mouseDown)
+        .on('touchend', mouseUp)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -168,6 +170,8 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
         .attr('d', line)
         .on('mousedown', mouseDown)
         .on('mouseup', mouseUp)
+        .on('touchstart', mouseDown)
+        .on('touchend', mouseUp)
         ;
     }
   });
@@ -183,6 +187,8 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
         .attr('data-type', dataKey)
         .on('mousedown', mouseDown)
         .on('mouseup', mouseUp)
+        .on('touchstart', mouseDown)
+        .on('touchend', mouseUp)
         ;
     }
   });
@@ -216,11 +222,24 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
 
   const mainChart = document.querySelector('svg > g:first-of-type');
 
-  domsvg.addEventListener('mousemove', e => {
-    if (e.clientY < mainChart.getBoundingClientRect().top) {
+  const handleHover = e => {
+    let clientY, clientX;
+
+    if (e.clientY === undefined) {
+      if (e.touches) {
+        clientY = e.touches[0].clientY;
+        clientX = e.touches[0].clientX;
+      } else {
+        return;
+      }
+    } else {
+      clientY = e.clientY;
+      clientX = e.clientX;
+    }
+    if (clientY < mainChart.getBoundingClientRect().top) {
       return;
     }
-    const pos = e.clientX - xoffset;
+    const pos = clientX - xoffset;
     buckets.some((v, i) => {
       if (pos < v) {
         if (i !== last) {
@@ -231,6 +250,9 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
       }
       return false;
     });
-  });
+  };
+
+  domsvg.addEventListener('mousemove', handleHover);
+  domsvg.addEventListener('touchmove', handleHover);
 
 }
