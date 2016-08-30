@@ -1,1 +1,1 @@
-export {tirSelection, types, period} from './tir-data-select';
+export {tirSelection, types, period, chartType} from './tir-data-select';

@@ -1,7 +1,8 @@
 import viewport from 'viewport-event';
 import line2Draw from './line2-draw';
+import bar1 from './bar1';
 import getData from './tirdata';
-import {tirSelection, types, period} from './helpers';
+import {tirSelection, types, period, chartType} from './helpers';
 
 
 export default function(stop) {
@@ -26,9 +27,11 @@ export default function(stop) {
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
-      line2Draw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+      const drw = chartType === 'bar' ? bar1 : line2Draw;
+      drw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
     });
-    line2Draw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+    const drw = chartType === 'bar' ? bar1 : line2Draw;
+    drw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
   };
   const getWidth = vp => {
     const winWidth = vp.clientWidth;

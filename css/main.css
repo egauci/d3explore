@@ -109,7 +109,7 @@ svg, svg * {
   border-bottom-width: 0;
 }
 
-.tir-checkboxes li {
+.tir-checkboxes li, .tir-chart-type li {
   display: inline-block;
   padding: 6px 10px;
 }

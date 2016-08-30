@@ -19,7 +19,7 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
     ;
 
   let interval = 1;
-  while (width / (days - 1) * interval < 60) {
+  while (width / (days - 1) * interval < 50) {
     interval += 1;
   }
 
