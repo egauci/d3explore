@@ -3,6 +3,7 @@ import viewport from 'viewport-event';
 
 let oldListener;
 
+/* eslint max-statements: 0 */
 export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
@@ -98,15 +99,21 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
       ;
   });
 
+  let mouseIsDown = false;
+
   const mouseDown = () => { // dim "other" lines
     const notincluded = d3.event.target.getAttribute('data-type');
     d3.selectAll(`.chart-line:NOT([data-type="${notincluded}"])`)
       .style('opacity', 0.3);
+    mouseIsDown = true;
   };
 
   const mouseUp = () => {
-    d3.selectAll('.chart-line')
-      .style('opacity', 1);
+    if (mouseIsDown) {
+      d3.selectAll('.chart-line')
+        .style('opacity', 1);
+      mouseIsDown = false;
+    }
   };
 
   let legend;
@@ -237,20 +244,7 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
 
   const mainChart = document.querySelector('svg > g:first-of-type');
 
-  const handleHover = e => {
-    let clientY, clientX;
-
-    if (e.clientY === undefined) {
-      if (e.touches) {
-        clientY = e.touches[0].clientY;
-        clientX = e.touches[0].clientX;
-      } else {
-        return;
-      }
-    } else {
-      clientY = e.clientY;
-      clientX = e.clientX;
-    }
+  const handleHover = (clientX, clientY) => {
     if (clientY < mainChart.getBoundingClientRect().top) {
       return;
     }
@@ -267,7 +261,35 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
     });
   };
 
-  domsvg.addEventListener('mousemove', handleHover);
-  domsvg.addEventListener('touchmove', handleHover);
+  let lastY = 0, lastX = 0;
+  const handleMove = e => {
+    let clientY, clientX;
+
+    if (e.clientY === undefined) {
+      if (e.touches) {
+        clientY = e.touches[0].clientY;
+        clientX = e.touches[0].clientX;
+      } else {
+        return;
+      }
+    } else {
+      clientY = e.clientY;
+      clientX = e.clientX;
+    }
+    handleHover(clientX, clientY);
+    if (mouseIsDown) {
+      if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
+        mouseUp();
+        lastX = clientX;
+        lastY = clientY;
+      }
+    } else {
+      lastX = clientX;
+      lastY = clientY;
+    }
+  };
+
+  domsvg.addEventListener('mousemove', handleMove);
+  domsvg.addEventListener('touchmove', handleMove);
 
 }
