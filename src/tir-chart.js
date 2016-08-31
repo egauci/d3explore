@@ -53,7 +53,6 @@ export default function(stop) {
       targetWidth = 320;
     }
     targetHeight = Math.floor(Math.max(Math.min(vp.clientHeight, 500), 320) / 10) * 10;
-    console.log(targetHeight);
   };
 
   const newSize = vp => {
