@@ -76,7 +76,7 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
 
   const svgTop = d3.select('#d3-target')
       .append('svg')
-      .attr('class', 'chart-1 line-1')
+      .attr('class', 'chart-1 line-1 tbar-1')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .style('background', '#f8f5ed')

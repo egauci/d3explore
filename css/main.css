@@ -90,7 +90,7 @@ h1 {
   stroke-width: 1px;
 }
 
-.chart-1.line-1.line-2 {
+.chart-1.line-1.line-2, .chart-1.line-1.tbar-1 {
   border: 1px solid #ddd;
 }
 
