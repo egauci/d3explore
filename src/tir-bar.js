@@ -61,10 +61,11 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
 
   x1.range([0, width / data.length]);
 
-  const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
+  // const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
+  const yMin = 0;
   const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
   let yValues = [];
-  for (let i = amtMin; i <= yMax; i += 5000000) {
+  for (let i = 0; i <= yMax; i += 5000000) {
     yValues = [...yValues, i];
   }
   y.domain([yMin, yMax]);
