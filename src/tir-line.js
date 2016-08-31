@@ -4,11 +4,11 @@ import viewport from 'viewport-event';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
+export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, types}) {
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = targetHeight - margin.top - margin.bottom;
 
   const x = d3.scaleTime()
     .range([0, width])

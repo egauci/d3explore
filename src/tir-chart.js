@@ -8,6 +8,8 @@ import {tirSelection, types, period, chartType} from './helpers';
 export default function(stop) {
   let targetWidth;
   let oldWidth;
+  let targetHeight;
+  let oldHeight;
 
   const amtMin = 10000000;
   const amtMax = 50000000;
@@ -28,10 +30,10 @@ export default function(stop) {
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
       const drw = chartType === 'bar' ? tirBar : tirLine;
-      drw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types});
     });
     const drw = chartType === 'bar' ? tirBar : tirLine;
-    drw(targetWidth, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types});
   };
   const getWidth = vp => {
     const winWidth = vp.clientWidth;
@@ -50,12 +52,15 @@ export default function(stop) {
     } else {
       targetWidth = 320;
     }
+    targetHeight = Math.floor(Math.max(Math.min(vp.clientHeight, 500), 320) / 10) * 10;
+    console.log(targetHeight);
   };
 
   const newSize = vp => {
     getWidth(vp);
-    if (targetWidth !== oldWidth) {
+    if (targetWidth !== oldWidth || targetHeight !== oldHeight) {
       oldWidth = targetWidth;
+      oldHeight = targetHeight;
       draw();
     }
   };
@@ -68,6 +73,7 @@ export default function(stop) {
 
   getWidth(viewport.getViewport());
   oldWidth = targetWidth;
+  oldHeight = targetHeight;
   draw();
   viewport.on('viewport', newSize);
 }

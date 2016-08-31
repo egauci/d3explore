@@ -4,7 +4,7 @@ import viewport from 'viewport-event';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}) {
+export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types}) {
 
 // use the same data source as line chart, however bars work better with
 // scaleBand rather than
@@ -14,7 +14,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    height = targetHeight - margin.top - margin.bottom;
 
 // x0 is the main x axis, with one band per day
   const x0 = d3.scaleBand()
