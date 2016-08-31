@@ -23,14 +23,19 @@ h1 {
 }
 
 .chart-1 .axis {
-  font: 10px sans-serif;
+  font: 12px Arial, sans-serif;
+  font-weight: bold;
 }
 
 .chart-1 .axis path,
 .chart-1 .axis line {
   fill: none;
-  stroke: #000;
+  stroke: black;
   shape-rendering: crispEdges;
+}
+
+.chart-1 .axis path {
+  stroke: #d3d3d3;
 }
 
 .chart-1:NOT(.line-1) .x.axis path {
@@ -40,28 +45,33 @@ h1 {
 .available-line {
   fill: none;
   stroke: rgb(108, 84, 161);
-  stroke-width: 4px;
+  stroke-width: 6px;
 }
 
 .ledger-line {
   fill: none;
   stroke: rgb(128, 0, 85);
-  stroke-width: 4px;
+  stroke-width: 6px;
 }
 
 .booked-line {
   fill: none;
   stroke: rgb(72, 128, 116);
-  stroke-width: 4px
+  stroke-width: 6px
 }
 
 .legend-line {
   stroke-width: 0;
-  font-family: arial, sans-serif;
-  font-size: 14px;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  shape-rendering: crispEdges;
   fill: black;
 }
 
+.available-symbol, .booked-symbol, .ledger-symbol {
+  stroke: white;
+  stroke-width: 2px;
+}
 .available-symbol {
   fill: rgb(108, 84, 161);
 }
@@ -75,7 +85,7 @@ h1 {
 }
 
 .line-1 .legend-rect {
-  fill: none;
+  fill: white;
   stroke: lightblue;
   stroke-width: 1px;
 }

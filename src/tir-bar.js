@@ -12,7 +12,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
   const timeFmt = d3.timeFormat('%b %d');
   const data = odata.map(d => Object.assign({}, d, {date: timeFmt(d.date), odate: d.date}));
 
-  const margin = {top: 100, right: 20, bottom: 30, left: 40},
+  const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -64,7 +64,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
   const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
   const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
   let yValues = [];
-  for (let i = amtMin; i < yMax; i += 5000000) {
+  for (let i = amtMin; i <= yMax; i += 5000000) {
     yValues = [...yValues, i];
   }
   y.domain([yMin, yMax]);
@@ -79,7 +79,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
       .attr('class', 'chart-1 line-1')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
-      .style('background', '#f8f8f8')
+      .style('background', '#f8f5ed')
       ;
 
   // the "down-line" from the legend to the Y axis. Draw it here so it is
@@ -125,7 +125,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
 
   const showLegend = function(val) {
     const legendWidth = 300;
-    const legendHeight = 90;
+    const legendHeight = 120;
     let left = Math.max(0, x0(val.date) + margin.left + x0.bandwidth() / 2 - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
     legend = svgTop.append('g')
@@ -140,7 +140,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
     legend.append('g')
       .attr('class', 'legend-dateline')
       .append('text')
-        .attr('transform', `translate(${left + 37}, 20)`)
+        .attr('transform', `translate(${left + 37}, 25)`)
         .text(legendTimeFmt(val.odate))
         ;
     legend.append('g')
@@ -149,15 +149,15 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
         .enter().append('g')
           .attr('class', 'legend-line')
             .append('text')
-              .attr('transform', (d, i) => `translate(${left + 160}, ${20 * (i + 2)})`)
+              .attr('transform', (d, i) => `translate(${left + 160}, ${25 * (i + 2)})`)
               .text(d => d3.format('10,.2f')(val[d.dataKey]) + ' USD')
     ;
     legend.selectAll('.legend-line')
       .append('path')
-        .attr('transform', (d, i) => `translate(${left + 20}, ${20 * (i + 2) - 5})`)
+        .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 5})`)
         .attr('class', d => d.symClass)
         .attr('data-type', d => d.dataKey)
-        .attr('d', d => d3.symbol().type(d.sym).size(100)())
+        .attr('d', d => d3.symbol().type(d.sym).size(120)())
         .on('mousedown', mouseDown)
         .on('mouseup', mouseUp)
         .on('touchstart', mouseDown)
@@ -165,7 +165,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
       ;
     legend.selectAll('.legend-line')
       .append('text')
-        .attr('transform', (d, i) => `translate(${left + 35}, ${20 * (i + 2)})`)
+        .attr('transform', (d, i) => `translate(${left + 35}, ${25 * (i + 2)})`)
         .text(d => d.label)
       ;
     legLine.attr('opacity', 1)
