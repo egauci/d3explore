@@ -30,13 +30,18 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
     .tickValues(xValues)
     ;
 
+  const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
+  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
+  let yValues = [];
+  for (let i = amtMin; i < yMax; i += 5000000) {
+    yValues = [...yValues, i];
+  }
+  y.domain([yMin, yMax]);
+
   const yAxis = d3.axisLeft(y)
     .tickFormat(d3.formatPrefix('.0', 1000000))
+    .tickValues(yValues)
     ;
-
-  y.domain([
-    Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked))),
-    Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)))]);
 
   const availableLine = d3.line()
     .x(d => x(d.date))
@@ -82,6 +87,16 @@ export default function(targetWidth, {amtMin, amtMax, days, data, types}) {
   const svg = svgTop
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  yValues.forEach(yval => {
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', width)
+      .attr('y1', y(yval))
+      .attr('y2', y(yval))
+      .attr('class', 'y-horizontal')
+      ;
+  });
 
   const mouseDown = () => { // dim "other" lines
     const notincluded = d3.event.target.getAttribute('data-type');

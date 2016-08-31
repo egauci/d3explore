@@ -118,3 +118,9 @@ h2 {
   font-weight: bold;
   margin: 10px 0;
 }
+
+.y-horizontal {
+  stroke: lightblue;
+  stroke-width: 1;
+  stroke-dasharray: 2, 4;
+}

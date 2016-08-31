@@ -3,6 +3,7 @@ import viewport from 'viewport-event';
 
 let oldListener;
 
+/* eslint max-statements: 0 */
 export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}) {
 
 // use the same data source as line chart, however bars work better with
@@ -58,16 +59,20 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
     .tickValues(xValues)
     ;
 
-  const yAxis = d3.axisLeft(y)
-    .tickFormat(d3.formatPrefix('.0', 1000000))
-    ;
-
   x1.range([0, width / data.length]);
 
-  y.domain([
-    Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked))),
-    Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)))]);
+  const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
+  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
+  let yValues = [];
+  for (let i = amtMin; i < yMax; i += 5000000) {
+    yValues = [...yValues, i];
+  }
+  y.domain([yMin, yMax]);
 
+  const yAxis = d3.axisLeft(y)
+    .tickFormat(d3.formatPrefix('.0', 1000000))
+    .tickValues(yValues)
+    ;
 
   const svgTop = d3.select('#d3-target')
       .append('svg')
@@ -93,6 +98,16 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+  yValues.forEach(yval => {
+    svg.append('line')
+      .attr('x1', 0)
+      .attr('x2', width)
+      .attr('y1', y(yval))
+      .attr('y2', y(yval))
+      .attr('class', 'y-horizontal')
+      ;
+  });
+
   const mouseDown = () => { // dim "other" lines
     const notincluded = d3.event.target.getAttribute('data-type');
     d3.selectAll(`.one-bar:NOT([data-type="${notincluded}"])`)
@@ -104,7 +119,7 @@ export default function (targetWidth, {amtMin, amtMax, days, data: odata, types}
       .style('opacity', 1);
   };
 
-let legend;
+  let legend;
 
   const legendTimeFmt = d3.timeFormat('%B %e');
 
