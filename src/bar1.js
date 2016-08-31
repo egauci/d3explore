@@ -111,7 +111,7 @@ let legend;
   const showLegend = function(val) {
     const legendWidth = 300;
     const legendHeight = 90;
-    let left = Math.max(0, x0(val.date) + margin.left / 2 - x0.bandwidth() / 2);
+    let left = Math.max(0, x0(val.date) + margin.left + x0.bandwidth() / 2 - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
     legend = svgTop.append('g')
       .attr('class', 'legend');
