@@ -89,31 +89,37 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  yValues.forEach(yval => {
+  yValues.forEach((yval, i) => {
     svg.append('line')
       .attr('x1', 0)
       .attr('x2', width)
       .attr('y1', y(yval))
       .attr('y2', y(yval))
-      .attr('class', 'y-horizontal')
+      .attr('class', i === 0 ? 'x axis line' : 'y-horizontal')
       ;
   });
 
-  let mouseIsDown = false;
+  let highlighted = false;
+
+  const mouseUp = () => {
+    if (highlighted) {
+      d3.selectAll('.chart-line')
+        .style('opacity', 1);
+      highlighted = false;
+    }
+  };
 
   const mouseDown = () => { // dim "other" lines
     const notincluded = d3.event.target.getAttribute('data-type');
+    if (highlighted && highlighted === notincluded) {
+      mouseUp();
+      return;
+    }
     d3.selectAll(`.chart-line:NOT([data-type="${notincluded}"])`)
       .style('opacity', 0.3);
-    mouseIsDown = true;
-  };
-
-  const mouseUp = () => {
-    if (mouseIsDown) {
-      d3.selectAll('.chart-line')
-        .style('opacity', 1);
-      mouseIsDown = false;
-    }
+    d3.select(`.chart-line[data-type="${notincluded}"]`)
+      .style('opacity', 1);
+    highlighted = notincluded;
   };
 
   let legend;
@@ -155,10 +161,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
         .attr('class', d => d.symClass)
         .attr('d', d => d3.symbol().type(d.sym).size(120)())
         .attr('data-type', d => d.dataKey)
-        .on('mousedown', mouseDown)
-        .on('mouseup', mouseUp)
-        .on('touchstart', mouseDown)
-        .on('touchend', mouseUp)
+        .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -190,10 +193,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
         .attr('class', `${cls} chart-line`)
         .attr('data-type', dataKey)
         .attr('d', line)
-        .on('mousedown', mouseDown)
-        .on('mouseup', mouseUp)
-        .on('touchstart', mouseDown)
-        .on('touchend', mouseUp)
+        .on('click', mouseDown)
         ;
     }
   });
@@ -207,10 +207,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
         .attr('d', d3.symbol().type(sym).size(120))
         .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
         .attr('data-type', dataKey)
-        .on('mousedown', mouseDown)
-        .on('mouseup', mouseUp)
-        .on('touchstart', mouseDown)
-        .on('touchend', mouseUp)
+        .on('click', mouseDown)
         ;
     }
   });
@@ -277,16 +274,16 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
       clientX = e.clientX;
     }
     handleHover(clientX, clientY);
-    if (mouseIsDown) {
-      if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
-        mouseUp();
-        lastX = clientX;
-        lastY = clientY;
-      }
-    } else {
-      lastX = clientX;
-      lastY = clientY;
-    }
+    // if (highlighted) {
+    //   if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
+    //     mouseUp();
+    //     lastX = clientX;
+    //     lastY = clientY;
+    //   }
+    // } else {
+    //   lastX = clientX;
+    //   lastY = clientY;
+    // }
   };
 
   domsvg.addEventListener('mousemove', handleMove);

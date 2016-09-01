@@ -40,7 +40,7 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
 // The x1 scale is for each group of three
   const x1 = d3.scaleBand()
     .domain(x1Domain)
-    .paddingOuter(0.2)
+    .paddingOuter(0.5)
     .paddingInner(0.1)
     ;
 
@@ -99,31 +99,37 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  yValues.forEach(yval => {
+  yValues.forEach((yval, i) => {
     svg.append('line')
       .attr('x1', 0)
       .attr('x2', width)
       .attr('y1', y(yval))
       .attr('y2', y(yval))
-      .attr('class', 'y-horizontal')
+      .attr('class', i === 0 ? 'x axis line' : 'y-horizontal')
       ;
   });
 
-  let mouseIsDown = false;
+  let highlighted = false;
+
+  const mouseUp = () => {
+    if (highlighted) {
+      d3.selectAll('.one-bar')
+        .style('opacity', 1);
+      highlighted = false;
+    }
+  };
 
   const mouseDown = () => { // dim "other" lines
     const notincluded = d3.event.target.getAttribute('data-type');
+    if (highlighted && highlighted === notincluded) {
+      mouseUp();
+      return;
+    }
     d3.selectAll(`.one-bar:NOT([data-type="${notincluded}"])`)
       .style('opacity', 0.3);
-    mouseIsDown = true;
-  };
-
-  const mouseUp = () => {
-    if (mouseIsDown) {
-      d3.selectAll('.one-bar')
-        .style('opacity', 1);
-      mouseIsDown = false;
-    }
+    d3.selectAll(`.one-bar[data-type="${notincluded}"]`)
+      .style('opacity', 1);
+    highlighted = notincluded;
   };
 
   let legend;
@@ -165,10 +171,7 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
         .attr('class', d => d.symClass)
         .attr('data-type', d => d.dataKey)
         .attr('d', d => d3.symbol().type(d.sym).size(120)())
-        .on('mousedown', mouseDown)
-        .on('mouseup', mouseUp)
-        .on('touchstart', mouseDown)
-        .on('touchend', mouseUp)
+        .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -212,10 +215,7 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
         .attr('x', (d, i) => x1.step() * i + x1.step() * x1.paddingOuter())
         .attr('fill', (d, i) => x1.domain()[i])
         .attr('y', y)
-        .on('mousedown', mouseDown)
-        .on('mouseup', mouseUp)
-        .on('touchstart', mouseDown)
-        .on('touchend', mouseUp)
+        .on('click', mouseDown)
       ;
 
   svg.append('g')
@@ -279,16 +279,16 @@ export default function (targetWidth, targetHeight, {amtMin, amtMax, days, data:
       clientX = e.clientX;
     }
     handleHover(clientX, clientY);
-    if (mouseIsDown) {
-      if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
-        mouseUp();
-        lastX = clientX;
-        lastY = clientY;
-      }
-    } else {
-      lastX = clientX;
-      lastY = clientY;
-    }
+    // if (highlighted) {
+    //   if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
+    //     mouseUp();
+    //     lastX = clientX;
+    //     lastY = clientY;
+    //   }
+    // } else {
+    //   lastX = clientX;
+    //   lastY = clientY;
+    // }
   };
 
   domsvg.addEventListener('mousemove', handleMove);

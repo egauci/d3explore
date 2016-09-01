@@ -34,11 +34,11 @@ h1 {
   shape-rendering: crispEdges;
 }
 
-.chart-1 .axis path {
+.chart-1 .axis path, .x.axis.line {
   stroke: #d3d3d3;
 }
 
-.chart-1:NOT(.line-1) .x.axis path {
+.x.axis path {
   display: none;
 }
 
@@ -68,10 +68,6 @@ h1 {
   fill: black;
 }
 
-.available-symbol, .booked-symbol, .ledger-symbol {
-  stroke: white;
-  stroke-width: 2px;
-}
 .available-symbol {
   fill: rgb(108, 84, 161);
 }
