@@ -130,3 +130,7 @@ h2 {
   stroke-width: 1;
   stroke-dasharray: 2, 4;
 }
+
+.hidden {
+  display: none;
+}

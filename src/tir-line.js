@@ -159,7 +159,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     legend.selectAll('.legend-line')
       .append('path')
         .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 5})`)
-        .attr('class', d => d.symClass)
+        .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
         .attr('d', d => d3.symbol().type(d.sym).size(120)())
         .attr('data-type', d => d.dataKey)
         .on('click', mouseDown)
