@@ -65,7 +65,8 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
                    sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'}
   ];
 
-  const svgTop = d3.select('#d3-target')
+  const container = d3.select('#d3-target');
+  const svgTop = container
       .append('svg')
       .attr('class', 'chart-1 line-1 line-2')
       .attr('width', width + margin.left + margin.right)
@@ -225,8 +226,9 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
   let xoffset;
   let buckets;
   let last = -1;
-  const getXoffset = function(vp) {
-    xoffset = margin.left - vp.scrollX;
+  const getXoffset = function() {
+    const vpleft = domsvg.getBoundingClientRect().left;
+    xoffset = margin.left + vpleft;
     const half = width / (data.length - 1) / 2;
     buckets = data.map((d, i) => i < (data.length - 1) ? x(d.date) + half : 10000);
   };
@@ -236,7 +238,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
   }
   oldListener = getXoffset;
 
-  getXoffset(viewport.getViewport());
+  getXoffset();
   viewport.on('viewport', getXoffset);
 
   const mainChart = document.querySelector('svg > g:first-of-type');
@@ -258,7 +260,6 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     });
   };
 
-  let lastY = 0, lastX = 0;
   const handleMove = e => {
     let clientY, clientX;
 
@@ -274,16 +275,6 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
       clientX = e.clientX;
     }
     handleHover(clientX, clientY);
-    // if (highlighted) {
-    //   if (Math.abs(clientX - lastX) > 10 || Math.abs(clientY - lastY) > 10) {
-    //     mouseUp();
-    //     lastX = clientX;
-    //     lastY = clientY;
-    //   }
-    // } else {
-    //   lastX = clientX;
-    //   lastY = clientY;
-    // }
   };
 
   domsvg.addEventListener('mousemove', handleMove);

@@ -36,22 +36,7 @@ export default function(stop) {
     drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types});
   };
   const getWidth = vp => {
-    const winWidth = vp.clientWidth;
-    if (winWidth > 960) {
-      targetWidth = 960;
-    } else if (winWidth > 800) {
-      targetWidth = 800;
-    } else if (winWidth > 700) {
-      targetWidth = 700;
-    } else if (winWidth > 600) {
-      targetWidth = 600;
-    } else if (winWidth > 500) {
-      targetWidth = 500;
-    } else if (winWidth > 400) {
-      targetWidth = 400;
-    } else {
-      targetWidth = 320;
-    }
+    targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 960), 320) / 10) * 10;
     targetHeight = Math.floor(Math.max(Math.min(vp.clientHeight, 500), 320) / 10) * 10;
   };
 
