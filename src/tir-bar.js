@@ -84,6 +84,71 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .style('background', '#f8f5ed')
       ;
 
+  const defs = svgTop.append('defs');
+  defs.append('pattern')
+      .attr('id', 'pattern-available')
+      .attr('width', '3')
+      .attr('height', '3')
+      .attr('patternUnits', 'userSpaceOnUse')
+      .attr('patternTransform', 'rotate(45)')
+      .append('rect')
+        .attr('width', '2')
+        .attr('height', '3')
+        .attr('transform', 'translate(0,0)')
+        .attr('fill', 'white')
+      ;
+  defs.append('mask')
+      .attr('id', 'mask-available')
+      .append('rect')
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'url(#pattern-available)')
+      ;
+  defs.append('pattern')
+      .attr('id', 'pattern-ledger')
+      .attr('width', '3')
+      .attr('height', '3')
+      .attr('patternUnits', 'userSpaceOnUse')
+      .attr('patternTransform', 'rotate(90)')
+      .append('rect')
+        .attr('width', '2')
+        .attr('height', '3')
+        .attr('transform', 'translate(0,0)')
+        .attr('fill', 'white')
+      ;
+  defs.append('mask')
+      .attr('id', 'mask-ledger')
+      .append('rect')
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'url(#pattern-ledger)')
+      ;
+  defs.append('pattern')
+      .attr('id', 'pattern-booked')
+      .attr('width', '3')
+      .attr('height', '3')
+      .attr('patternUnits', 'userSpaceOnUse')
+      .attr('patternTransform', 'rotate(135)')
+      .append('rect')
+        .attr('width', '2')
+        .attr('height', '3')
+        .attr('transform', 'translate(0,0)')
+        .attr('fill', 'white')
+      ;
+  defs.append('mask')
+      .attr('id', 'mask-booked')
+      .append('rect')
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'url(#pattern-booked)')
+      ;
+
   // the "down-line" from the legend to the Y axis. Draw it here so it is
   // behind the chart.
   const legLine = svgTop.append('line')
@@ -168,10 +233,11 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     ;
     legend.selectAll('.legend-line')
       .append('path')
-        .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 5})`)
+        .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 10})`)
         .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
         .attr('data-type', d => d.dataKey)
-        .attr('d', d => d3.symbol().type(d.sym).size(120)())
+        .attr('d', d => d3.symbol().type(d.sym).size(600)())
+        .attr('mask', d => `url(#mask-${d.dataKey})`)
         .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
@@ -216,6 +282,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
         .attr('x', (d, i) => x1.step() * i + x1.step() * x1.paddingOuter())
         .attr('fill', (d, i) => x1.domain()[i])
         .attr('y', y)
+        .attr('mask', (d, i) => `url(#mask-${keys[i]})`)
         .on('click', mouseDown)
       ;
 
