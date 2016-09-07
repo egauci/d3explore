@@ -36,8 +36,8 @@ export default function(stop) {
     drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType});
   };
   const getWidth = vp => {
-    targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 960), 320) / 10) * 10;
-    targetHeight = Math.floor(Math.max(Math.min(vp.clientHeight, 500), 320) / 10) * 10;
+    targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 4000), 320) / 10) * 10;
+    targetHeight = Math.floor(Math.max(Math.min(vp.clientHeight, 600), 320) / 10) * 10;
   };
 
   const newSize = vp => {
