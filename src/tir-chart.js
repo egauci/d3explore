@@ -29,11 +29,11 @@ export default function(stop) {
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
-      const drw = chartType === 'bar' ? tirBar : tirLine;
-      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+      const drw = chartType !== 'line' ? tirBar : tirLine;
+      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType});
     });
-    const drw = chartType === 'bar' ? tirBar : tirLine;
-    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types});
+    const drw = chartType !== 'line' ? tirBar : tirLine;
+    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType});
   };
   const getWidth = vp => {
     targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 960), 320) / 10) * 10;

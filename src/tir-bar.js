@@ -4,7 +4,7 @@ import viewport from 'viewport-event';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function (targetWidth, targetHeight, {amtMax, days, data: odata, types}) {
+export default function (targetWidth, targetHeight, {amtMax, days, data: odata, types, chartType}) {
 
 // use the same data source as line chart, however bars work better with
 // scaleBand rather than
@@ -232,12 +232,15 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
               .text(d => d3.format('10,.2f')(val[d.dataKey]) + ' USD')
     ;
     legend.selectAll('.legend-line')
-      .append('path')
-        .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 10})`)
+      .append('rect')
+        .attr('transform', (d, i) => `translate(${left + 12}, ${25 * (i + 2) - 13})`)
         .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
         .attr('data-type', d => d.dataKey)
-        .attr('d', d => d3.symbol().type(d.sym).size(600)())
-        .attr('mask', d => `url(#mask-${d.dataKey})`)
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('height', '15')
+        .attr('width', '15')
+        .attr('mask', d => chartType === 'bar' ? 'none' : `url(#mask-${d.dataKey})`)
         .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
@@ -282,7 +285,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
         .attr('x', (d, i) => x1.step() * i + x1.step() * x1.paddingOuter())
         .attr('fill', (d, i) => x1.domain()[i])
         .attr('y', y)
-        .attr('mask', (d, i) => `url(#mask-${keys[i]})`)
+        .attr('mask', (d, i) => chartType === 'bar' ? 'none' : `url(#mask-${keys[i]})`)
         .on('click', mouseDown)
       ;
 

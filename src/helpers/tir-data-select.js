@@ -27,7 +27,8 @@ const types = new Map([
 
 const chartTypeData = [
   {type: 'line', label: 'Line'},
-  {type: 'bar', label: 'Bar'}
+  {type: 'bar', label: 'Solid Bar'},
+  {type: 'pbar', label: 'Patterned Bar'}
 ];
 
 let period = 7;
