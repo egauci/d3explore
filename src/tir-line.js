@@ -144,7 +144,8 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     legend.append('g')
       .attr('class', 'legend-dateline')
       .append('text')
-        .attr('transform', `translate(${left + 37}, 25)`)
+        .attr('transform', `translate(${left + 12}, 25)`)
+        .style('font-weight', 'bold')
         .text(legendTimeFmt(val.date))
         ;
     legend.append('g')
@@ -160,7 +161,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
       .append('path')
         .attr('transform', (d, i) => `translate(${left + 20}, ${25 * (i + 2) - 5})`)
         .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
-        .attr('d', d => d3.symbol().type(d.sym).size(120)())
+        .attr('d', d => d3.symbol().type(d.sym).size(180)())
         .attr('data-type', d => d.dataKey)
         .on('click', mouseDown)
       ;

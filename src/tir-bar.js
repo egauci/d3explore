@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
+import {defs} from './helpers/';
 
 let oldListener;
 
@@ -83,74 +84,17 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .attr('height', height + margin.top + margin.bottom)
       .style('background', '#f8f5ed')
       ;
-
-  const defs = svgTop.append('defs');
-  defs.append('pattern')
-      .attr('id', 'pattern-available')
-      .attr('width', '3')
-      .attr('height', '3')
-      .attr('patternUnits', 'userSpaceOnUse')
-      .attr('patternTransform', 'rotate(45)')
-      .append('rect')
-        .attr('width', '2')
-        .attr('height', '3')
-        .attr('transform', 'translate(0,0)')
-        .attr('fill', 'white')
-      ;
-  defs.append('mask')
-      .attr('id', 'mask-available')
-      .append('rect')
-        .attr('x', '0')
-        .attr('y', '0')
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('fill', 'url(#pattern-available)')
-      ;
-  defs.append('pattern')
-      .attr('id', 'pattern-ledger')
-      .attr('width', '3')
-      .attr('height', '3')
-      .attr('patternUnits', 'userSpaceOnUse')
-      .attr('patternTransform', 'rotate(90)')
-      .append('rect')
-        .attr('width', '2')
-        .attr('height', '3')
-        .attr('transform', 'translate(0,0)')
-        .attr('fill', 'white')
-      ;
-  defs.append('mask')
-      .attr('id', 'mask-ledger')
-      .append('rect')
-        .attr('x', '0')
-        .attr('y', '0')
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('fill', 'url(#pattern-ledger)')
-      ;
-  defs.append('pattern')
-      .attr('id', 'pattern-booked')
-      .attr('width', '3')
-      .attr('height', '3')
-      .attr('patternUnits', 'userSpaceOnUse')
-      .attr('patternTransform', 'rotate(135)')
-      .append('rect')
-        .attr('width', '2')
-        .attr('height', '3')
-        .attr('transform', 'translate(0,0)')
-        .attr('fill', 'white')
-      ;
-  defs.append('mask')
-      .attr('id', 'mask-booked')
-      .append('rect')
-        .attr('x', '0')
-        .attr('y', '0')
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('fill', 'url(#pattern-booked)')
-      ;
+  defs(svgTop);
 
   // the "down-line" from the legend to the Y axis. Draw it here so it is
   // behind the chart.
+  const legColumn = svgTop.append('rect')
+    .attr('fill', 'black')
+    .attr('opacity', 0)
+    .attr('width', x0.bandwidth())
+    .attr('y', 0)
+    ;
+
   const legLine = svgTop.append('line')
       .attr('x1', 0)
       .attr('x2', 0)
@@ -219,7 +163,8 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     legend.append('g')
       .attr('class', 'legend-dateline')
       .append('text')
-        .attr('transform', `translate(${left + 37}, 25)`)
+        .attr('transform', `translate(${left + 12}, 25)`)
+        .style('font-weight', 'bold')
         .text(legendTimeFmt(val.odate))
         ;
     legend.append('g')
@@ -254,6 +199,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .attr('y1', legendHeight)
       .attr('y2', height + margin.top)
     ;
+    legColumn.attr('opacity', 0.06)
+      .attr('height', height + margin.top)
+      .attr('x', x0(val.date) + margin.left)
+    ;
   };
 
   const hideLegend = function() {
@@ -261,6 +210,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       legend.remove();
       legend = null;
       legLine.attr('opacity', 0);
+      legColumn.attr('opacity', 0);
     }
   };
 
