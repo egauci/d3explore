@@ -60,7 +60,7 @@ h1 {
   stroke-width: 4px
 }
 
-.legend-line {
+.legend-line, .legend-dateline {
   stroke-width: 0;
   font-family: Arial, sans-serif;
   font-size: 15px;
