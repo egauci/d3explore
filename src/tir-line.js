@@ -215,15 +215,20 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     }
   });
 
+  let firstSet = true;
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
     if (types.get(dataKey).checked) {
+      const tabindex = firstSet ? '0' : '-1';
+      firstSet = false;
       svg.selectAll(cls)
         .data(width / (days - 1) > 20 ? data : [data[0], data[data.length - 1]])
         .enter().append('path')
         .attr('class', cls)
+        .attr('tabindex', tabindex)
         .attr('d', d3.symbol().type(sym).size(120))
         .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
         .attr('data-type', dataKey)
+        .on('focus', showLegend)
         .on('click', mouseDown)
         ;
     }
