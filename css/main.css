@@ -45,19 +45,19 @@ h1 {
 .available-line {
   fill: none;
   stroke: rgb(108, 84, 161);
-  stroke-width: 6px;
+  stroke-width: 4px;
 }
 
 .ledger-line {
   fill: none;
   stroke: rgb(128, 0, 85);
-  stroke-width: 6px;
+  stroke-width: 4px;
 }
 
 .booked-line {
   fill: none;
   stroke: rgb(72, 128, 116);
-  stroke-width: 6px
+  stroke-width: 4px
 }
 
 .legend-line {

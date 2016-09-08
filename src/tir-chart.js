@@ -19,13 +19,18 @@ export default function(stop) {
 
   const draw = () => {
     document.querySelector('#d3-target').innerHTML = '';
-    const options = document.createElement('div');
-    options.id = 'chart-options';
-    options.className = 'chart-options';
-    document.querySelector('#d3-target').appendChild(options);
+    const options1 = document.createElement('div');
+    options1.id = 'chart-options1';
+    options1.className = 'chart-options';
+    document.querySelector('#d3-target').appendChild(options1);
+    const options2 = document.createElement('div');
+    options2.id = 'chart-options2';
+    options2.className = 'chart-options';
+    document.querySelector('#options2-target').innerHTML = '';
+    document.querySelector('#options2-target').appendChild(options2);
     let days = Math.min(period, maxDays);
 
-    tirSelection(options, () => {
+    tirSelection(options1, options2, () => {
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);

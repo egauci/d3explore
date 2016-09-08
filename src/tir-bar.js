@@ -107,6 +107,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
 
   const svg = svgTop
       .append('g')
+      .attr('id', 'main-chart')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
   yValues.forEach((yval, i) => {
@@ -129,8 +130,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     }
   };
 
-  const mouseDown = () => { // dim "other" lines
-    const notincluded = d3.event.target.getAttribute('data-type');
+  const highLight = notincluded => {
     if (highlighted && highlighted === notincluded) {
       mouseUp();
       return;
@@ -142,16 +142,37 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     highlighted = notincluded;
   };
 
+  const mouseDown = () => { // dim "other" lines
+    highLight(d3.event.target.getAttribute('data-type'));
+  };
+
+  const symClick = dta => {
+    const {code, key, charCode} = d3.event;
+    if (code === 'Enter' || key === 'Enter' || charCode === 13) {
+      highLight(dta.dataKey);
+    }
+  };
+
   let legend;
 
   const legendTimeFmt = d3.timeFormat('%B %e');
 
+  const hideLegend = function() {
+    if (legend) {
+      legend.remove();
+      legend = null;
+      legLine.attr('opacity', 0);
+      legColumn.attr('opacity', 0);
+    }
+  };
+
   const showLegend = function(val) {
+    hideLegend();
     const legendWidth = 300;
     const legendHeight = 120;
     let left = Math.max(0, x0(val.date) + margin.left + x0.bandwidth() / 2 - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
-    legend = svgTop.append('g')
+    legend = svgTop.insert('g', 'g')
       .attr('class', 'legend');
     legend
       .append('rect')
@@ -186,6 +207,9 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
         .attr('height', '15')
         .attr('width', '15')
         .attr('mask', d => chartType === 'bar' ? 'none' : `url(#mask-${d.dataKey})`)
+        .attr('role', 'button')
+        .attr('tabindex', '0')
+        .on('keypress', symClick)
         .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
@@ -199,19 +223,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .attr('y1', legendHeight)
       .attr('y2', height + margin.top)
     ;
-    legColumn.attr('opacity', 0.06)
+    legColumn.attr('opacity', 0.05)
       .attr('height', height + margin.top)
       .attr('x', x0(val.date) + margin.left)
     ;
-  };
-
-  const hideLegend = function() {
-    if (legend) {
-      legend.remove();
-      legend = null;
-      legLine.attr('opacity', 0);
-      legColumn.attr('opacity', 0);
-    }
   };
 
   showLegend(data[0]);
@@ -224,6 +239,9 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .append('g')
       .attr('class', 'bar-group')
       .attr('transform', d => `translate(${x0(d.date)}, 0)`)
+      .attr('tabindex', '0')
+      .style('outline', 'none')
+      .on('focus', showLegend)
       .selectAll('.one-bar')
         .data(d => retBarData(d))
         .enter()
@@ -266,7 +284,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
   getXoffset();
   viewport.on('viewport', getXoffset);
 
-  const mainChart = document.querySelector('svg > g:first-of-type');
+  const mainChart = document.querySelector('#main-chart');
 
   const handleHover = (clientX, clientY) => {
     if (clientY < mainChart.getBoundingClientRect().top) {
@@ -276,7 +294,6 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     buckets.some((v, i) => {
       if (pos < v) {
         if (i !== last) {
-          hideLegend();
           showLegend(data[i]);
         }
         return true;

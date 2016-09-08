@@ -42,7 +42,7 @@ const selOpts = [
   {val: 90, label: 'Previous 90 days'}
 ];
 
-const tirSelection = (container, callback) => {
+const tirSelection = (container1, container2, callback) => {
   const ctOuter = document.createElement('div');
   ctOuter.className = 'tir-chart-type';
   const cthdr = document.createElement('h2');
@@ -102,9 +102,10 @@ const tirSelection = (container, callback) => {
     ul.appendChild(li);
   }
   cbOuter.appendChild(ul);
-  container.appendChild(ctOuter);
-  container.appendChild(pdOuter);
-  container.appendChild(cbOuter);
+  container2.innerHTML = '';
+  container2.appendChild(ctOuter);
+  container1.appendChild(pdOuter);
+  container2.appendChild(cbOuter);
   ul.addEventListener('click', e => {
     if (e.target.nodeName !== 'INPUT') {
       return;
