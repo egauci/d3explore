@@ -80,9 +80,13 @@ h1 {
   fill: rgb(128, 0, 85);
 }
 
+.available-symbol:focus, .booked-symbol:focus, .ledger-symbol:focus {
+  outline: 2px solid #6da003;
+}
+
 .line-1 .legend-rect {
   fill: white;
-  stroke: lightblue;
+  stroke: #6da003;
   stroke-width: 1px;
 }
 
@@ -133,4 +137,9 @@ h2 {
 
 .hidden {
   display: none;
+}
+
+.selected-backing {
+  fill: red;
+  opacity: 0.3;
 }

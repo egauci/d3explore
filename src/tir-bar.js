@@ -100,7 +100,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
       .attr('x2', 0)
       .attr('y1', 0)
       .attr('y2', 0)
-      .attr('stroke', 'lightblue')
+      .attr('stroke', '#6da003')
       .attr('stroke-width', 2)
       .attr('opacity', 0)
       ;
@@ -196,6 +196,15 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
             .append('text')
               .attr('transform', (d, i) => `translate(${left + 160}, ${25 * (i + 2)})`)
               .text(d => d3.format('10,.2f')(val[d.dataKey]) + ' USD')
+    ;
+    legend.selectAll('.legend-line')
+      .append('rect')
+        .attr('transform', (d, i) => `translate(${left + 5}, ${25 * (i + 2) - 16})`)
+        .attr('class', 'hidden') // d => types.get(d.dataKey).checked ? 'selected-backing' : 'hidden')
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('height', '21')
+        .attr('width', legendWidth - 10)
     ;
     legend.selectAll('.legend-line')
       .append('rect')

@@ -81,7 +81,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     .attr('x2', 0)
     .attr('y1', 0)
     .attr('y2', 0)
-    .attr('stroke', 'lightblue')
+    .attr('stroke', '#6da003')
     .attr('stroke-width', 2)
     .attr('opacity', 0)
   ;
