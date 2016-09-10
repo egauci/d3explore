@@ -4,11 +4,33 @@ import viewport from 'viewport-event';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, types}) {
+export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types}) {
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
     height = targetHeight - margin.top - margin.bottom;
+
+  const itemList = [
+    {lineClass: 'available-line', symClass: 'available-symbol',
+                   sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
+    {lineClass: 'ledger-line', symClass: 'ledger-symbol',
+                   sym: d3.symbolTriangle, dataKey: 'ledger', label: 'Closing Ledger'},
+    {lineClass: 'booked-line', symClass: 'booked-symbol',
+                   sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'}
+  ];
+
+  let keys = [];
+  itemList.forEach(({dataKey}) => {
+    if (types.get(dataKey).checked) {
+      keys = [...keys, dataKey];
+    }
+  });
+
+  const data = odata.map(d => {
+    const o = Object.assign({}, d);
+    o.average = keys.reduce((p, v) => d[v] + p, 0) / keys.length;
+    return o;
+  });
 
   const x = d3.scaleTime()
     .range([0, width])
@@ -56,14 +78,18 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
     .x(d => x(d.date))
     .y(d => y(d.booked));
 
-  const itemList = [
-    {lineClass: 'available-line', symClass: 'available-symbol', line: availableLine,
-                   sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
-    {lineClass: 'ledger-line', symClass: 'ledger-symbol', line: ledgerLine,
-                   sym: d3.symbolTriangle, dataKey: 'ledger', label: 'Closing Ledger'},
-    {lineClass: 'booked-line', symClass: 'booked-symbol', line: bookedLine,
-                   sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'}
-  ];
+  const thelines = {
+    available: availableLine,
+    ledger: ledgerLine,
+    booked: bookedLine
+  };
+
+  const area = d3.area()
+    .x(d => x(d.date))
+    .y0(() => y(yMin))
+    .y1(d => y(d.average))
+    .curve(d3.curveNatural)
+    ;
 
   const container = d3.select('#d3-target');
   const svgTop = container
@@ -203,13 +229,13 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
 
   showLegend(data[0]);
 
-  itemList.forEach(({lineClass: cls, line, dataKey}) => {
+  itemList.forEach(({lineClass: cls, dataKey}) => {
     if (types.get(dataKey).checked) {
       svg.append('path')
         .data([data])
         .attr('class', `${cls} chart-line`)
         .attr('data-type', dataKey)
-        .attr('d', line)
+        .attr('d', thelines[dataKey])
         .on('click', mouseDown)
         ;
     }
@@ -233,6 +259,12 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data, 
         ;
     }
   });
+
+  svg.append('path')
+    .data([data])
+    .attr('class', 'average-area')
+    .attr('d', area)
+    ;
 
   svg.append('g')
         .attr('class', 'x axis')

@@ -143,3 +143,8 @@ h2 {
   fill: red;
   opacity: 0.3;
 }
+
+.average-area {
+  fill: black;
+  opacity: 0.2;
+}

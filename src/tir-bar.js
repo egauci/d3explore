@@ -11,17 +11,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
 // scaleBand rather than
 // the continuous timeBand. Convert the date property to String.
   const timeFmt = d3.timeFormat('%b %d');
-  const data = odata.map(d => Object.assign({}, d, {date: timeFmt(d.date), odate: d.date}));
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
     height = targetHeight - margin.top - margin.bottom;
-
-// x0 is the main x axis, with one band per day
-  const x0 = d3.scaleBand()
-    .range([0, width], 0.1)
-    .domain(data.map(d => d.date))
-    ;
 
   const itemList = [
     {symClass: 'available-symbol', sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
@@ -38,6 +31,18 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     }
   });
 
+  const data = odata.map(d => {
+    const o = Object.assign({}, d, {date: timeFmt(d.date), odate: d.date});
+    o.average = keys.reduce((p, v) => d[v] + p, 0) / keys.length;
+    return o;
+  });
+
+  // x0 is the main x axis, with one band per day
+  const x0 = d3.scaleBand()
+    .range([0, width], 0.1)
+    .domain(data.map(d => d.date))
+    ;
+
 // The x1 scale is for each group of three
   const x1 = d3.scaleBand()
     .domain(x1Domain)
@@ -47,6 +52,13 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
 
   const y = d3.scaleLinear()
     .range([height, 0])
+    ;
+
+  const area = d3.area()
+    .x(d => x0(d.date) + x0.bandwidth() / 2)
+    .y0(() => y(0))
+    .y1(d => y(d.average))
+    .curve(d3.curveNatural)
     ;
 
   let interval = 1;
@@ -265,6 +277,12 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
         .attr('mask', (d, i) => chartType === 'bar' ? 'none' : `url(#mask-${keys[i]})`)
         .on('click', mouseDown)
       ;
+
+  svg.append('path')
+    .data([data])
+    .attr('class', 'average-area')
+    .attr('d', area)
+    ;
 
   svg.append('g')
         .attr('class', 'x axis')
