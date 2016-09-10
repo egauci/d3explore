@@ -35,6 +35,8 @@ let period = 7;
 
 let chartType = 'bar';
 
+let curve = 'none';
+
 const selOpts = [
   {val: 7, label: 'Previous 7 days'},
   {val: 30, label: 'Previous 30 days'},
@@ -42,6 +44,18 @@ const selOpts = [
   {val: 90, label: 'Previous 90 days'}
 ];
 
+const curveOpts = [
+  {val: 'none', label: 'No Area Curve'},
+  {val: 'curveLinear', label: 'Linear'},
+  {val: 'curveMonotoneX', label: 'Monotone X'},
+  {val: 'curveMonotoneY', label: 'Monotone Y'},
+  {val: 'curveNatural', label: 'Natural'},
+  {val: 'curveStep', label: 'Step'},
+  {val: 'curveStepAfter', label: 'Step After'},
+  {val: 'curveStepBefore', label: 'Step Before'}
+];
+
+/* eslint max-statements: 0 */
 const tirSelection = (container1, container2, callback) => {
   const ctOuter = document.createElement('div');
   ctOuter.className = 'tir-chart-type';
@@ -102,10 +116,27 @@ const tirSelection = (container1, container2, callback) => {
     ul.appendChild(li);
   }
   cbOuter.appendChild(ul);
+  const avgOuter = document.createElement('div');
+  avgOuter.className = 'tir-average';
+  const avghdr = document.createElement('h2');
+  avghdr.appendChild(document.createTextNode('Average Area Curve'));
+  avgOuter.appendChild(avghdr);
+  const asel = document.createElement('select');
+  curveOpts.forEach(itm => {
+    const opt = document.createElement('option');
+    if (itm.val === curve) {
+      opt.selected = true;
+    }
+    opt.value = itm.val;
+    opt.appendChild(document.createTextNode(itm.label));
+    asel.appendChild(opt);
+  });
+  avgOuter.appendChild(asel);
   container2.innerHTML = '';
   container2.appendChild(ctOuter);
   container1.appendChild(pdOuter);
   container2.appendChild(cbOuter);
+  container2.appendChild(avgOuter);
   ul.addEventListener('click', e => {
     if (e.target.nodeName !== 'INPUT') {
       return;
@@ -131,6 +162,10 @@ const tirSelection = (container1, container2, callback) => {
     period = Number(e.target.value);
     callback();
   });
+  asel.addEventListener('change', e => {
+    curve = e.target.value;
+    callback();
+  });
 };
 
-export {tirSelection, types, period, chartType};
+export {tirSelection, types, period, chartType, curve};

@@ -2,7 +2,7 @@ import viewport from 'viewport-event';
 import tirLine from './tir-line';
 import tirBar from './tir-bar';
 import getData from './tirdata';
-import {tirSelection, types, period, chartType} from './helpers';
+import {tirSelection, types, period, chartType, curve} from './helpers';
 
 
 export default function(stop) {
@@ -35,10 +35,10 @@ export default function(stop) {
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
       const drw = chartType !== 'line' ? tirBar : tirLine;
-      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType});
+      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve});
     });
     const drw = chartType !== 'line' ? tirBar : tirLine;
-    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType});
+    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve});
   };
   const getWidth = vp => {
     targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 4000), 320) / 10) * 10;

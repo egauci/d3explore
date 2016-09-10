@@ -5,7 +5,8 @@ import {defs} from './helpers/';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function (targetWidth, targetHeight, {amtMax, days, data: odata, types, chartType}) {
+export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
+          types, chartType, curve}) {
 
 // use the same data source as line chart, however bars work better with
 // scaleBand rather than
@@ -54,11 +55,11 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
     .range([height, 0])
     ;
 
-  const area = d3.area()
+  const area = curve === 'none' ? null : d3.area()
     .x(d => x0(d.date) + x0.bandwidth() / 2)
     .y0(() => y(0))
     .y1(d => y(d.average))
-    .curve(d3.curveNatural)
+    .curve(d3[curve])
     ;
 
   let interval = 1;
@@ -278,11 +279,13 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata, 
         .on('click', mouseDown)
       ;
 
-  svg.append('path')
-    .data([data])
-    .attr('class', 'average-area')
-    .attr('d', area)
-    ;
+  if (area) {
+    svg.append('path')
+      .data([data])
+      .attr('class', 'average-area')
+      .attr('d', area)
+      ;
+  }
 
   svg.append('g')
         .attr('class', 'x axis')
