@@ -229,6 +229,15 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
 
   showLegend(data[0]);
 
+  svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', `translate(0,${height})`)
+        .call(xAxis);
+
+  svg.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis);
+
   itemList.forEach(({lineClass: cls, dataKey}) => {
     if (types.get(dataKey).checked) {
       svg.append('path')
@@ -267,15 +276,6 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
       .attr('d', area)
       ;
   }
-
-  svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(xAxis);
-
-  svg.append('g')
-        .attr('class', 'y axis')
-        .call(yAxis);
 
   const domsvg = document.querySelector('#d3-target > svg');
   let xoffset;
