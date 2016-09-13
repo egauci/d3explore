@@ -45,14 +45,14 @@ const selOpts = [
 ];
 
 const curveOpts = [
-  {val: 'none', label: 'No Area Curve'},
+  {val: 'none', label: 'No Average Curve'},
   {val: 'curveLinear', label: 'Linear'},
   {val: 'curveMonotoneX', label: 'Monotone X'},
-  {val: 'curveMonotoneY', label: 'Monotone Y'},
+  // {val: 'curveMonotoneY', label: 'Monotone Y'},
   {val: 'curveNatural', label: 'Natural'},
-  {val: 'curveStep', label: 'Step'},
-  {val: 'curveStepAfter', label: 'Step After'},
-  {val: 'curveStepBefore', label: 'Step Before'}
+  {val: 'curveStep', label: 'Step'}
+  // {val: 'curveStepAfter', label: 'Step After'},
+  // {val: 'curveStepBefore', label: 'Step Before'}
 ];
 
 /* eslint max-statements: 0 */
@@ -119,7 +119,7 @@ const tirSelection = (container1, container2, callback) => {
   const avgOuter = document.createElement('div');
   avgOuter.className = 'tir-average';
   const avghdr = document.createElement('h2');
-  avghdr.appendChild(document.createTextNode('Average Area Curve'));
+  avghdr.appendChild(document.createTextNode('Average Line Curve for Bar Charts'));
   avgOuter.appendChild(avghdr);
   const asel = document.createElement('select');
   curveOpts.forEach(itm => {

@@ -4,7 +4,7 @@ import viewport from 'viewport-event';
 let oldListener;
 
 /* eslint max-statements: 0 */
-export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types, curve}) {
+export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types}) {
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
@@ -84,12 +84,12 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     booked: bookedLine
   };
 
-  const area = curve === 'none' ? null : d3.area()
-    .x(d => x(d.date))
-    .y0(() => y(yMin))
-    .y1(d => y(d.average))
-    .curve(d3[curve])
-    ;
+  // const area = curve === 'none' ? null : d3.area()
+  //   .x(d => x(d.date))
+  //   .y0(() => y(yMin))
+  //   .y1(d => y(d.average))
+  //   .curve(d3[curve])
+  //   ;
 
   const container = d3.select('#d3-target');
   const svgTop = container
@@ -269,13 +269,13 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     }
   });
 
-  if (area) {
-    svg.append('path')
-      .data([data])
-      .attr('class', 'average-area')
-      .attr('d', area)
-      ;
-  }
+  // if (area) {
+  //   svg.append('path')
+  //     .data([data])
+  //     .attr('class', 'average-area')
+  //     .attr('d', area)
+  //     ;
+  // }
 
   const domsvg = document.querySelector('#d3-target > svg');
   let xoffset;

@@ -55,12 +55,11 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     .range([height, 0])
     ;
 
-  const area = curve === 'none' ? null : d3.area()
-    .x(d => x0(d.date) + x0.bandwidth() / 2)
-    .y0(() => y(0))
-    .y1(d => y(d.average))
-    .curve(d3[curve])
-    ;
+  const avgLine = curve === 'none' ? null : d3.line()
+      .x(d => x0(d.date) + x0.bandwidth() / 2)
+      .y(d => y(d.average))
+      .curve(d3[curve])
+      ;
 
   let interval = 1;
   while (width / days * interval < 50) {
@@ -102,7 +101,8 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   // the "down-line" from the legend to the Y axis. Draw it here so it is
   // behind the chart.
   const legColumn = svgTop.append('rect')
-    .attr('fill', 'black')
+    .attr('class', 'leged-column')
+    .attr('fill', 'white')
     .attr('opacity', 0)
     .attr('width', x0.bandwidth())
     .attr('y', 0)
@@ -245,7 +245,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .attr('y1', legendHeight)
       .attr('y2', height + margin.top)
     ;
-    legColumn.attr('opacity', 0.05)
+    legColumn.attr('opacity', 0.9)
       .attr('height', height + margin.top)
       .attr('x', x0(val.date) + margin.left)
     ;
@@ -279,11 +279,11 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
         .on('click', mouseDown)
       ;
 
-  if (area) {
+  if (avgLine) {
     svg.append('path')
       .data([data])
-      .attr('class', 'average-area')
-      .attr('d', area)
+      .attr('class', 'average-line')
+      .attr('d', avgLine)
       ;
   }
 
