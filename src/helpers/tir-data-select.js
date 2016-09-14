@@ -37,6 +37,8 @@ let chartType = 'bar';
 
 let curve = 'none';
 
+let highlight;
+
 const selOpts = [
   {val: 7, label: 'Previous 7 days'},
   {val: 30, label: 'Previous 30 days'},
@@ -81,9 +83,11 @@ const tirSelection = (container1, container2, callback) => {
   ctOuter.appendChild(ctul);
   const pdOuter = document.createElement('div');
   pdOuter.className = 'tir-period';
+  const pdInner = document.createElement('div');
+  pdOuter.appendChild(pdInner);
   const pdhdr = document.createElement('h2');
   pdhdr.appendChild(document.createTextNode('Select Period'));
-  pdOuter.appendChild(pdhdr);
+  pdInner.appendChild(pdhdr);
   const sel = document.createElement('select');
   selOpts.forEach(itm => {
     const opt = document.createElement('option');
@@ -94,7 +98,51 @@ const tirSelection = (container1, container2, callback) => {
     opt.appendChild(document.createTextNode(itm.label));
     sel.appendChild(opt);
   });
-  pdOuter.appendChild(sel);
+  pdInner.appendChild(sel);
+  const hiInner = document.createElement('div');
+  pdOuter.appendChild(hiInner);
+  const hihdr = document.createElement('h2');
+  hihdr.appendChild(document.createTextNode('Hilight a series'));
+  hiInner.appendChild(hihdr);
+  const hibtns = document.createElement('div');
+  hibtns.className = 'highlight-buttons';
+  hiInner.appendChild(hibtns);
+  const availbtn = document.createElement('button');
+  availbtn.id = 'avail-hibutton';
+  availbtn.className = 'avail-hibutton';
+  availbtn.dataset.type = 'available';
+  hibtns.appendChild(availbtn);
+  const availlbl = document.createElement('label');
+  availlbl.htmlFor = 'avail-hibutton';
+  availlbl.appendChild(document.createTextNode('Open Available'));
+  hibtns.appendChild(availlbl);
+  const ledgerbtn = document.createElement('button');
+  ledgerbtn.id = 'ledger-hibutton';
+  ledgerbtn.className = 'ledger-hibutton';
+  ledgerbtn.dataset.type = 'ledger';
+  hibtns.appendChild(ledgerbtn);
+  const ledgerlbl = document.createElement('label');
+  ledgerlbl.htmlFor = 'ledger-hibutton';
+  ledgerlbl.appendChild(document.createTextNode('Closing Ledger'));
+  hibtns.appendChild(ledgerlbl);
+  const bookedbtn = document.createElement('button');
+  bookedbtn.id = 'booked-hibutton';
+  bookedbtn.className = 'booked-hibutton';
+  bookedbtn.dataset.type = 'booked';
+  hibtns.appendChild(bookedbtn);
+  const bookedlbl = document.createElement('label');
+  bookedlbl.htmlFor = 'booked-hibutton';
+  bookedlbl.appendChild(document.createTextNode('Closing Collected'));
+  hibtns.appendChild(bookedlbl);
+  hibtns.addEventListener('click', e => {
+    if (e.target.nodeName !== 'BUTTON') {
+      return;
+    }
+    const newhilight = e.target.dataset.type;
+    highlight = highlight === newhilight ? null : e.target.dataset.type;
+    callback();
+  });
+
   const cbOuter = document.createElement('div');
   cbOuter.className = 'tir-checkboxes';
   const ulhdr = document.createElement('h2');
@@ -168,4 +216,4 @@ const tirSelection = (container1, container2, callback) => {
   });
 };
 
-export {tirSelection, types, period, chartType, curve};
+export {tirSelection, types, period, chartType, curve, highlight};

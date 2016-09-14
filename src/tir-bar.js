@@ -4,9 +4,11 @@ import {defs} from './helpers/';
 
 let oldListener;
 
+let setHilight;
+
 /* eslint max-statements: 0 */
 export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
-          types, chartType, curve}) {
+          types, chartType, curve, highlight}) {
 
 // use the same data source as line chart, however bars work better with
 // scaleBand rather than
@@ -144,7 +146,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   };
 
   const highLight = notincluded => {
-    if (highlighted && highlighted === notincluded) {
+    if (!notincluded || (highlighted && highlighted === notincluded)) {
       mouseUp();
       return;
     }
@@ -155,16 +157,18 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     highlighted = notincluded;
   };
 
+  setHilight = highLight;
+
   const mouseDown = () => { // dim "other" lines
     highLight(d3.event.target.getAttribute('data-type'));
   };
 
-  const symClick = dta => {
-    const {code, key, charCode} = d3.event;
-    if (code === 'Enter' || key === 'Enter' || charCode === 13) {
-      highLight(dta.dataKey);
-    }
-  };
+  // const symClick = dta => {
+  //   const {code, key, charCode} = d3.event;
+  //   if (code === 'Enter' || key === 'Enter' || charCode === 13) {
+  //     highLight(dta.dataKey);
+  //   }
+  // };
 
   let legend;
 
@@ -178,6 +182,13 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       legColumn.attr('opacity', 0);
     }
   };
+
+  const dateAriaLabel = d => `
+    Date: ${legendTimeFmt(d.odate)}
+    Open Available: ${d3.format('10,.2f')(d.available)} USD
+    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD
+    Closing Booked: ${d3.format('10,.2f')(d.booked)} USD
+  `;
 
   const showLegend = function(val) {
     hideLegend();
@@ -229,10 +240,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
         .attr('height', '15')
         .attr('width', '15')
         .attr('mask', d => chartType === 'bar' ? 'none' : `url(#mask-${d.dataKey})`)
-        .attr('role', 'button')
-        .attr('tabindex', '0')
-        .on('keypress', symClick)
-        .on('click', mouseDown)
+        // .attr('role', 'button')
+        // .attr('tabindex', '0')
+        // .on('keypress', symClick)
+        // .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -251,7 +262,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     ;
   };
 
-  showLegend(data[0]);
+  // showLegend(data[0]);
 
   const retBarData = d => keys.map(k => d[k]);
 
@@ -264,6 +275,8 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .attr('tabindex', '0')
       .style('outline', 'none')
       .on('focus', showLegend)
+      .on('blur', hideLegend)
+      .attr('aria-label', dateAriaLabel)
       .selectAll('.one-bar')
         .data(d => retBarData(d))
         .enter()
@@ -351,4 +364,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
 
   domsvg.addEventListener('mousemove', handleMove);
   domsvg.addEventListener('touchmove', handleMove);
+  domsvg.addEventListener('mouseleave', hideLegend);
+  if (highlight) {
+    setHilight(highlight);
+  }
 }
+
+export {setHilight as setBarHighlight};

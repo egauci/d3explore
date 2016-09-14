@@ -1,8 +1,8 @@
 import viewport from 'viewport-event';
-import tirLine from './tir-line';
-import tirBar from './tir-bar';
+import tirLine, {setLineHighlight} from './tir-line';
+import tirBar, {setBarHighlight} from './tir-bar';
 import getData from './tirdata';
-import {tirSelection, types, period, chartType, curve} from './helpers';
+import {tirSelection, types, period, chartType, curve, highlight} from './helpers';
 
 
 export default function(stop) {
@@ -10,6 +10,7 @@ export default function(stop) {
   let oldWidth;
   let targetHeight;
   let oldHeight;
+  let oldHighlight = highlight;
 
   const amtMin = 10000000;
   const amtMax = 50000000;
@@ -31,14 +32,22 @@ export default function(stop) {
     let days = Math.min(period, maxDays);
 
     tirSelection(options1, options2, () => {
+      if (highlight !== oldHighlight) {
+        const seth = chartType !== 'line' ? setBarHighlight : setLineHighlight;
+        seth(highlight);
+        oldHighlight = highlight;
+        return;
+      }
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
       const drw = chartType !== 'line' ? tirBar : tirLine;
-      drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve});
+      drw(targetWidth, targetHeight,
+        {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve, highlight});
     });
     const drw = chartType !== 'line' ? tirBar : tirLine;
-    drw(targetWidth, targetHeight, {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve});
+    drw(targetWidth, targetHeight,
+      {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve, highlight});
   };
   const getWidth = vp => {
     targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 4000), 320) / 10) * 10;

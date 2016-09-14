@@ -72,15 +72,28 @@ h1 {
   fill: rgb(108, 84, 161);
 }
 
+.avail-hibutton {
+  background: rgb(108, 84, 161);
+}
+
 .booked-symbol {
   fill: rgb(72, 128, 116);
+}
+
+.booked-hibutton {
+  background: rgb(72, 128, 116);
 }
 
 .ledger-symbol {
   fill: rgb(128, 0, 85);
 }
 
-.available-symbol:focus, .booked-symbol:focus, .ledger-symbol:focus {
+.ledger-hibutton {
+  background: rgb(128, 0, 85);
+}
+
+.available-symbol:focus, .booked-symbol:focus, .ledger-symbol:focus,
+.highlight-buttons button:focus {
   outline: 2px solid #6da003;
 }
 
@@ -154,4 +167,20 @@ h2 {
   stroke: black;
   stroke-width: 2;
   opacity: 0.5;
+}
+
+.tir-period > div {
+  display: inline-block;
+  margin-right: 50px;
+}
+
+.highlight-buttons button {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+  border: 2px solid white;
+}
+
+.highlight-buttons label {
+  margin-right: 25px;
 }

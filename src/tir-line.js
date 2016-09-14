@@ -3,8 +3,10 @@ import viewport from 'viewport-event';
 
 let oldListener;
 
+let setHilight;
+
 /* eslint max-statements: 0 */
-export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types}) {
+export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types, highlight}) {
 
   const margin = {top: 130, right: 30, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
@@ -138,7 +140,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   };
 
   const highLight = notincluded => {
-    if (highlighted && highlighted === notincluded) {
+    if (!notincluded || (highlighted && highlighted === notincluded)) {
       mouseUp();
       return;
     }
@@ -149,16 +151,18 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     highlighted = notincluded;
   };
 
+  setHilight = highLight;
+
   const mouseDown = () => { // dim "other" lines
     highLight(d3.event.target.getAttribute('data-type'));
   };
 
-  const symClick = dta => {
-    const {code, key, charCode} = d3.event;
-    if (code === 'Enter' || key === 'Enter' || charCode === 13) {
-      highLight(dta.dataKey);
-    }
-  };
+  // const symClick = dta => {
+  //   const {code, key, charCode} = d3.event;
+  //   if (code === 'Enter' || key === 'Enter' || charCode === 13) {
+  //     highLight(dta.dataKey);
+  //   }
+  // };
 
   let legend;
 
@@ -171,6 +175,13 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
       legLine.attr('opacity', 0);
     }
   };
+
+  const dateAriaLabel = d => `
+    Date: ${legendTimeFmt(d.date)}
+    Open Available: ${d3.format('10,.2f')(d.available)} USD
+    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD
+    Closing Booked: ${d3.format('10,.2f')(d.booked)} USD
+  `;
 
   const showLegend = function(val) {
     hideLegend();
@@ -209,10 +220,10 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
         .attr('d', d => d3.symbol().type(d.sym).size(180)())
         .attr('data-type', d => d.dataKey)
-        .attr('role', 'button')
-        .attr('tabindex', '0')
-        .on('keypress', symClick)
-        .on('click', mouseDown)
+        // .attr('role', 'button')
+        // .attr('tabindex', '0')
+        // .on('keypress', symClick)
+        // .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -227,7 +238,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     ;
   };
 
-  showLegend(data[0]);
+  // showLegend(data[0]);
 
   svg.append('g')
         .attr('class', 'x axis')
@@ -254,16 +265,20 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
     if (types.get(dataKey).checked) {
       const tabindex = firstSet ? '0' : '-1';
+      const setAriaLabel = firstSet ? dateAriaLabel : null;
       firstSet = false;
       svg.selectAll(cls)
         .data(width / (days - 1) > 20 ? data : [data[0], data[data.length - 1]])
         .enter().append('path')
         .attr('class', cls)
         .attr('tabindex', tabindex)
+        .attr('aria-label', setAriaLabel)
+        .style('outline', 'none')
         .attr('d', d3.symbol().type(sym).size(120))
         .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
         .attr('data-type', dataKey)
         .on('focus', showLegend)
+        .on('blur', hideLegend)
         .on('click', mouseDown)
         ;
     }
@@ -333,5 +348,10 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
 
   domsvg.addEventListener('mousemove', handleMove);
   domsvg.addEventListener('touchmove', handleMove);
-
+  domsvg.addEventListener('mouseleave', hideLegend);
+  if (highlight) {
+    setHilight(highlight);
+  }
 }
+
+export {setHilight as setLineHighlight};
