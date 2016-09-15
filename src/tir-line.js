@@ -263,6 +263,20 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     }
   });
 
+  let lines = document.querySelectorAll('.chart-line');
+  let lengths = [...lines].map(line => line.getTotalLength());
+
+  d3.selectAll('.chart-line')
+    .attr('stroke-dasharray', (d, i) => `${lengths[i]} ${lengths[i]}`)
+    .attr('stroke-dashoffset', (d, i) => `${lengths[i]}`)
+    // .attr('stroke-dashoffset', (d, i) => lengths[i])
+    .transition()
+      .duration(4000)
+      .ease(d3.easeLinear)
+      .attr('stroke-dashoffset', 0)
+    ;
+
+  let opacityVal = 1 / (width / (days - 1) > 20 ? data.length : 2);
   let firstSet = true;
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
     if (types.get(dataKey).checked) {
@@ -284,6 +298,12 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         .on('focus', showLegend)
         .on('blur', hideLegend)
         .on('click', mouseDown)
+        .attr('opacity', (d, i) => Math.max(0, 0.8 - (opacityVal * i)))
+        .transition()
+          .duration(3000)
+          .delay(1000)
+          .ease(d3.easeCubicIn)
+          .attr('opacity', 1)
         ;
     }
   });
