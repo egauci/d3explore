@@ -180,8 +180,10 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     Date: ${legendTimeFmt(d.date)}
     Open Available: ${d3.format('10,.2f')(d.available)} USD
     Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD
-    Closing Booked: ${d3.format('10,.2f')(d.booked)} USD
+    Closing Collected: ${d3.format('10,.2f')(d.booked)} USD
   `;
+
+  const dateAriaId = d => `g-${legendTimeFmt(d.date)}`.replace(/ /g, '-');
 
   const showLegend = function(val) {
     hideLegend();
@@ -265,14 +267,16 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   itemList.forEach(({symClass: cls, sym, dataKey}) => {
     if (types.get(dataKey).checked) {
       const tabindex = firstSet ? '0' : '-1';
-      const setAriaLabel = firstSet ? dateAriaLabel : null;
+      // const setAriaLabel = firstSet ? dateAriaLabel : null;
       firstSet = false;
-      svg.selectAll(cls)
+      svg.selectAll(`.${cls}`)
         .data(width / (days - 1) > 20 ? data : [data[0], data[data.length - 1]])
         .enter().append('path')
         .attr('class', cls)
         .attr('tabindex', tabindex)
-        .attr('aria-label', setAriaLabel)
+        // .attr('aria-label', setAriaLabel)
+        .attr('role', 'img')
+        .attr('aria-labelledby', dateAriaId)
         .style('outline', 'none')
         .attr('d', d3.symbol().type(sym).size(120))
         .attr('transform', d => `translate(${x(d.date)}, ${y(d[dataKey])})`)
@@ -283,6 +287,15 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         ;
     }
   });
+
+  svg.selectAll('.datedesc')
+    .data(data)
+    .enter()
+      .append('desc')
+        .attr('id', dateAriaId)
+        .attr('class', '.datedesc')
+        .text(dateAriaLabel)
+  ;
 
   // if (area) {
   //   svg.append('path')

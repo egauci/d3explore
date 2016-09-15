@@ -187,8 +187,10 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     Date: ${legendTimeFmt(d.odate)}
     Open Available: ${d3.format('10,.2f')(d.available)} USD
     Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD
-    Closing Booked: ${d3.format('10,.2f')(d.booked)} USD
+    Closing Collected: ${d3.format('10,.2f')(d.booked)} USD
   `;
+
+  const dateAriaId = d => `g-${legendTimeFmt(d.odate)}`.replace(/ /g, '-');
 
   const showLegend = function(val) {
     hideLegend();
@@ -271,12 +273,14 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     .enter()
       .append('g')
       .attr('class', 'bar-group')
+      .attr('role', 'img')
+      .attr('aria-labelledby', dateAriaId)
       .attr('transform', d => `translate(${x0(d.date)}, 0)`)
       .attr('tabindex', '0')
       .style('outline', 'none')
       .on('focus', showLegend)
       .on('blur', hideLegend)
-      .attr('aria-label', dateAriaLabel)
+      // .attr('aria-label', dateAriaLabel)
       .selectAll('.one-bar')
         .data(d => retBarData(d))
         .enter()
@@ -291,6 +295,12 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
         .attr('mask', (d, i) => chartType === 'bar' ? 'none' : `url(#mask-${keys[i]})`)
         .on('click', mouseDown)
       ;
+
+  svg.selectAll('.bar-group')
+    .append('desc')
+      .attr('id', dateAriaId)
+      .text(dateAriaLabel)
+    ;
 
   if (avgLine) {
     svg.append('path')
