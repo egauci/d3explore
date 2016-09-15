@@ -69,9 +69,6 @@ export default function(stop) {
     return;
   }
 
-  getWidth(viewport.getViewport());
-  oldWidth = targetWidth;
-  oldHeight = targetHeight;
-  draw();
+  newSize(viewport.getViewport());
   viewport.on('viewport', newSize);
 }
