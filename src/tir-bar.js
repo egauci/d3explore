@@ -266,7 +266,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
 
   // showLegend(data[0]);
 
-  const retBarData = d => keys.map(k => d[k]);
+  const retBarData = (d, ix) => keys.map(k => ({amt: d[k], ix}));
 
   svg.selectAll('.bar-group')
     .data(data)
@@ -282,18 +282,27 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .on('blur', hideLegend)
       // .attr('aria-label', dateAriaLabel)
       .selectAll('.one-bar')
-        .data(d => retBarData(d))
+        .data((d, i) => retBarData(d, i))
         .enter()
         .append('rect')
         .attr('class', 'one-bar')
         .attr('data-type', (d, i) => keys[i])
-        .attr('height', d => height - y(d))
         .attr('width', x1.bandwidth())
         .attr('x', (d, i) => x1.step() * i + x1.step() * x1.paddingOuter())
         .attr('fill', (d, i) => x1.domain()[i])
-        .attr('y', y)
         .attr('mask', (d, i) => chartType === 'bar' ? 'none' : `url(#mask-${keys[i]})`)
         .on('click', mouseDown)
+        .attr('y', height)
+        .attr('height', 0)
+        .attr('transform', 'rotate(45)')
+        .attr('opacity', 0.5)
+        .transition()
+        .duration(200)
+        .delay(d => d.ix * 20)
+        .attr('y', d => y(d.amt))
+        .attr('height', d => height - y(d.amt))
+        .attr('transform', 'rotate(0)')
+        .attr('opacity', 1)
       ;
 
   svg.selectAll('.bar-group')
