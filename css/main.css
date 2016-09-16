@@ -184,3 +184,20 @@ h2 {
 .highlight-buttons label {
   margin-right: 25px;
 }
+
+.main-chart-desc {
+  position: absolute;
+  left: -1000px;
+  height: 1px;
+  width: 1px;
+  text-align: left;
+  overflow: hidden;
+  padding: 10px;
+  background: white;
+}
+
+.main-chart-desc:focus {
+  left: 10px;
+  width: auto;
+  height: auto;
+}

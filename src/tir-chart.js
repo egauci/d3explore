@@ -2,7 +2,7 @@ import viewport from 'viewport-event';
 import tirLine, {setLineHighlight} from './tir-line';
 import tirBar, {setBarHighlight} from './tir-bar';
 import getData from './tirdata';
-import {tirSelection, types, period, chartType, curve, highlight} from './helpers';
+import {tirSelection, types, period, chartType, curve, highlight, chartDescription} from './helpers';
 
 
 export default function(stop) {
@@ -16,7 +16,11 @@ export default function(stop) {
   const amtMax = 50000000;
   const maxDays = 90;
 
-  const data = getData({maxDays, min: amtMin, max: amtMax});
+  const fullData = getData({maxDays, min: amtMin, max: amtMax});
+
+  const fillChartInfo = data => {
+    document.querySelector('#main-chart-desc').innerHTML = `<pre>${chartDescription(data)}</pre>`;
+  };
 
   const draw = () => {
     document.querySelector('#d3-target').innerHTML = '';
@@ -24,13 +28,19 @@ export default function(stop) {
     options1.id = 'chart-options1';
     options1.className = 'chart-options';
     document.querySelector('#d3-target').appendChild(options1);
+    const chartInfo = document.createElement('div');
+    chartInfo.id = 'main-chart-desc';
+    chartInfo.setAttribute('tabindex', '0');
+    chartInfo.className = 'main-chart-desc';
+    document.querySelector('#d3-target').appendChild(chartInfo);
     const options2 = document.createElement('div');
     options2.id = 'chart-options2';
     options2.className = 'chart-options';
     document.querySelector('#options2-target').innerHTML = '';
     document.querySelector('#options2-target').appendChild(options2);
     let days = Math.min(period, maxDays);
-
+    let data = fullData.slice(0 - days);
+    fillChartInfo(data);
     tirSelection(options1, options2, () => {
       if (highlight !== oldHighlight) {
         const seth = chartType !== 'line' ? setBarHighlight : setLineHighlight;
@@ -42,12 +52,14 @@ export default function(stop) {
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
       const drw = chartType !== 'line' ? tirBar : tirLine;
+      data = fullData.slice(0 - days);
+      fillChartInfo(data);
       drw(targetWidth, targetHeight,
-        {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve, highlight});
+        {amtMin, amtMax, days, data, types, chartType, curve, highlight});
     });
     const drw = chartType !== 'line' ? tirBar : tirLine;
     drw(targetWidth, targetHeight,
-      {amtMin, amtMax, days, data: data.slice(0 - days), types, chartType, curve, highlight});
+      {amtMin, amtMax, days, data, types, chartType, curve, highlight});
   };
   const getWidth = vp => {
     targetWidth = Math.floor(Math.max(Math.min(vp.clientWidth, 4000), 320) / 10) * 10;
