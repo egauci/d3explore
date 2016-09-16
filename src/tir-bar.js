@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
-import {defs} from './helpers/';
+import {defs, chartDescription} from './helpers/';
 
 let oldListener;
 
@@ -33,6 +33,8 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       keys = [...keys, dataKey];
     }
   });
+
+  const chartDesc = chartDescription(odata);
 
   const data = odata.map(d => {
     const o = Object.assign({}, d, {date: timeFmt(d.date), odate: d.date});
@@ -97,6 +99,9 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
       .style('background', '#f8f5ed')
+      .attr('tabindex', '0')
+      .attr('role', 'img')
+      .attr('aria-labelledby', 'main-chart-desc')
       ;
   defs(svgTop);
 
@@ -328,6 +333,11 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   svg.append('g')
         .attr('class', 'y axis')
         .call(yAxis);
+
+  svg.append('desc')
+    .attr('id', 'main-chart-desc')
+    .text(chartDesc)
+    ;
 
   const domsvg = document.querySelector('#d3-target > svg');
   let xoffset;
