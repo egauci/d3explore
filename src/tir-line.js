@@ -177,9 +177,9 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   };
 
   const dateAriaLabel = d => `
-    Date: ${legendTimeFmt(d.date)}
-    Open Available: ${d3.format('10,.2f')(d.available)} USD
-    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD
+    Date: ${legendTimeFmt(d.date)},
+    Open Available: ${d3.format('10,.2f')(d.available)} USD,
+    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD,
     Closing Collected: ${d3.format('10,.2f')(d.booked)} USD
   `;
 
