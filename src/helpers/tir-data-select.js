@@ -107,33 +107,24 @@ const tirSelection = (container1, container2, callback) => {
   const hibtns = document.createElement('div');
   hibtns.className = 'highlight-buttons';
   hiInner.appendChild(hibtns);
-  const availbtn = document.createElement('button');
-  availbtn.id = 'avail-hibutton';
-  availbtn.className = 'avail-hibutton';
-  availbtn.dataset.type = 'available';
-  hibtns.appendChild(availbtn);
-  const availlbl = document.createElement('label');
-  availlbl.htmlFor = 'avail-hibutton';
-  availlbl.appendChild(document.createTextNode('Open Available'));
-  hibtns.appendChild(availlbl);
-  const ledgerbtn = document.createElement('button');
-  ledgerbtn.id = 'ledger-hibutton';
-  ledgerbtn.className = 'ledger-hibutton';
-  ledgerbtn.dataset.type = 'ledger';
-  hibtns.appendChild(ledgerbtn);
-  const ledgerlbl = document.createElement('label');
-  ledgerlbl.htmlFor = 'ledger-hibutton';
-  ledgerlbl.appendChild(document.createTextNode('Closing Ledger'));
-  hibtns.appendChild(ledgerlbl);
-  const bookedbtn = document.createElement('button');
-  bookedbtn.id = 'booked-hibutton';
-  bookedbtn.className = 'booked-hibutton';
-  bookedbtn.dataset.type = 'booked';
-  hibtns.appendChild(bookedbtn);
-  const bookedlbl = document.createElement('label');
-  bookedlbl.htmlFor = 'booked-hibutton';
-  bookedlbl.appendChild(document.createTextNode('Closing Collected'));
-  hibtns.appendChild(bookedlbl);
+
+  for (let [k, v] of types) {
+    const bctr = document.createElement('div');
+    bctr.className = 'highlight-button';
+    const btn = document.createElement('button');
+    const id = `${k}-hibutton`;
+    bctr.id = `${id}-ctr`;
+    btn.id = id;
+    btn.className = id;
+    btn.dataset.type = k;
+    const lbl = document.createElement('label');
+    lbl.htmlFor = id;
+    lbl.appendChild(document.createTextNode(v.label));
+    bctr.appendChild(btn);
+    bctr.appendChild(lbl);
+    hibtns.appendChild(bctr);
+  }
+
   hibtns.addEventListener('click', e => {
     if (e.target.nodeName !== 'BUTTON') {
       return;

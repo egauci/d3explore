@@ -36,3 +36,14 @@ export const chartDescription = data => {
   }
   return lines.join('\n\n');
 };
+
+export const dateAriaLabel = d => {
+  const dtkey = d.odate ? 'odate' : 'date';
+  const lines = [`Date: ${descTimeFormat(d[dtkey])}.`];
+  for (let [k, v] of types) {
+    if (v.checked) {
+      lines.push(`${types.get(k).label}: ${descAmtFormat(d[k])} USD.`);
+    }
+  }
+  return lines.join('\n');
+};

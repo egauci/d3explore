@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
+import {dateAriaLabel} from './helpers/';
 
 let oldListener;
 
@@ -7,10 +8,6 @@ let setHilight;
 
 /* eslint max-statements: 0 */
 export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: odata, types, highlight}) {
-
-  const margin = {top: 130, right: 30, bottom: 30, left: 40},
-    width = targetWidth - margin.left - margin.right,
-    height = targetHeight - margin.top - margin.bottom;
 
   const itemList = [
     {lineClass: 'available-line', symClass: 'available-symbol',
@@ -22,11 +19,17 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   ];
 
   let keys = [];
-  itemList.forEach(({dataKey}) => {
+  let inuseItemList = [];
+  itemList.forEach(({dataKey}, i) => {
     if (types.get(dataKey).checked) {
       keys = [...keys, dataKey];
+      inuseItemList = [...inuseItemList, itemList[i]];
     }
   });
+
+  const margin = {top: 130 - (25 * (3 - keys.length)), right: 30, bottom: 30, left: 40},
+    width = targetWidth - margin.left - margin.right,
+    height = targetHeight - margin.top - margin.bottom;
 
   const data = odata.map(d => {
     const o = Object.assign({}, d);
@@ -157,13 +160,6 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     highLight(d3.event.target.getAttribute('data-type'));
   };
 
-  // const symClick = dta => {
-  //   const {code, key, charCode} = d3.event;
-  //   if (code === 'Enter' || key === 'Enter' || charCode === 13) {
-  //     highLight(dta.dataKey);
-  //   }
-  // };
-
   let legend;
 
   const legendTimeFmt = d3.timeFormat('%B %e');
@@ -176,19 +172,12 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     }
   };
 
-  const dateAriaLabel = d => `
-    Date: ${legendTimeFmt(d.date)},
-    Open Available: ${d3.format('10,.2f')(d.available)} USD,
-    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD,
-    Closing Collected: ${d3.format('10,.2f')(d.booked)} USD
-  `;
-
   const dateAriaId = d => `g-${legendTimeFmt(d.date)}`.replace(/ /g, '-');
 
   const showLegend = function(val) {
     hideLegend();
     const legendWidth = 300;
-    const legendHeight = 120;
+    const legendHeight = margin.top - 10;
     let left = Math.max(0, x(val.date) + margin.left - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
     legend = svgTop.insert('g', 'g')
@@ -209,7 +198,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         ;
     legend.append('g')
       .selectAll('.legend-line')
-        .data(itemList)
+        .data(inuseItemList)
         .enter().append('g')
           .attr('class', 'legend-line')
             .append('text')
@@ -222,10 +211,6 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         .attr('class', d => types.get(d.dataKey).checked ? d.symClass : 'hidden')
         .attr('d', d => d3.symbol().type(d.sym).size(180)())
         .attr('data-type', d => d.dataKey)
-        // .attr('role', 'button')
-        // .attr('tabindex', '0')
-        // .on('keypress', symClick)
-        // .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')
@@ -271,7 +256,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     .attr('stroke-dashoffset', (d, i) => `${lengths[i]}`)
     // .attr('stroke-dashoffset', (d, i) => lengths[i])
     .transition()
-      .duration(4000)
+      .duration(2500)
       .ease(d3.easeLinear)
       .attr('stroke-dashoffset', 0)
     ;
@@ -300,8 +285,8 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
         .on('click', mouseDown)
         .attr('opacity', (d, i) => Math.max(0, 0.8 - (opacityVal * i)))
         .transition()
-          .duration(3000)
-          .delay(1000)
+          .duration(2000)
+          .delay(800)
           .ease(d3.easeCubicIn)
           .attr('opacity', 1)
         ;

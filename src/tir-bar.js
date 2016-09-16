@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
-import {defs} from './helpers/';
+import {defs, dateAriaLabel} from './helpers/';
 
 let oldListener;
 
@@ -15,10 +15,6 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
 // the continuous timeBand. Convert the date property to String.
   const timeFmt = d3.timeFormat('%b %d');
 
-  const margin = {top: 130, right: 30, bottom: 30, left: 40},
-    width = targetWidth - margin.left - margin.right,
-    height = targetHeight - margin.top - margin.bottom;
-
   const itemList = [
     {symClass: 'available-symbol', sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
     {symClass: 'ledger-symbol', sym: d3.symbolSquare, dataKey: 'ledger', label: 'Closing Ledger'},
@@ -27,12 +23,18 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
 
   let x1Domain = [];
   let keys = [];
-  itemList.forEach(({dataKey}) => {
+  let inuseItemList = [];
+  itemList.forEach(({dataKey}, i) => {
     if (types.get(dataKey).checked) {
       x1Domain = [...x1Domain, types.get(dataKey).color];
       keys = [...keys, dataKey];
+      inuseItemList = [...inuseItemList, itemList[i]];
     }
   });
+
+  const margin = {top: 130 - (25 * (3 - keys.length)), right: 30, bottom: 30, left: 40},
+    width = targetWidth - margin.left - margin.right,
+    height = targetHeight - margin.top - margin.bottom;
 
   const data = odata.map(d => {
     const o = Object.assign({}, d, {date: timeFmt(d.date), odate: d.date});
@@ -163,13 +165,6 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     highLight(d3.event.target.getAttribute('data-type'));
   };
 
-  // const symClick = dta => {
-  //   const {code, key, charCode} = d3.event;
-  //   if (code === 'Enter' || key === 'Enter' || charCode === 13) {
-  //     highLight(dta.dataKey);
-  //   }
-  // };
-
   let legend;
 
   const legendTimeFmt = d3.timeFormat('%B %e');
@@ -183,19 +178,12 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     }
   };
 
-  const dateAriaLabel = d => `
-    Date: ${legendTimeFmt(d.odate)},
-    Open Available: ${d3.format('10,.2f')(d.available)} USD,
-    Closing Ledger: ${d3.format('10,.2f')(d.ledger)} USD,
-    Closing Collected: ${d3.format('10,.2f')(d.booked)} USD
-  `;
-
   const dateAriaId = d => `g-${legendTimeFmt(d.odate)}`.replace(/ /g, '-');
 
   const showLegend = function(val) {
     hideLegend();
     const legendWidth = 300;
-    const legendHeight = 120;
+    const legendHeight = margin.top - 10;
     let left = Math.max(0, x0(val.date) + margin.left + x0.bandwidth() / 2 - legendWidth / 2);
     left = Math.min(width + margin.left + margin.right - legendWidth, left);
     legend = svgTop.insert('g', 'g')
@@ -216,7 +204,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
         ;
     legend.append('g')
       .selectAll('.legend-line')
-        .data(itemList)
+        .data(inuseItemList)
         .enter().append('g')
           .attr('class', 'legend-line')
             .append('text')
@@ -242,10 +230,6 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
         .attr('height', '15')
         .attr('width', '15')
         .attr('mask', d => chartType === 'bar' ? 'none' : `url(#mask-${d.dataKey})`)
-        // .attr('role', 'button')
-        // .attr('tabindex', '0')
-        // .on('keypress', symClick)
-        // .on('click', mouseDown)
       ;
     legend.selectAll('.legend-line')
       .append('text')

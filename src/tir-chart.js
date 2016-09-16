@@ -48,6 +48,10 @@ export default function(stop) {
         oldHighlight = highlight;
         return;
       }
+      for (let [k, v] of types) {
+        const dtype = v.checked ? '' : 'none';
+        document.querySelector(`#${k}-hibutton-ctr`).style.display = dtype;
+      }
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
       days = Math.min(period, maxDays);
