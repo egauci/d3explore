@@ -20,7 +20,7 @@ const itemSummary = (data, key, dtkey) => {
     return curStats;
   }, initStats);
   return `The highest ${label} was ${descAmtFormat(stats.highest.amt)} USD on ${descTimeFormat(stats.highest.date)},
-    and the lowest ${label} was on ${descAmtFormat(stats.lowest.amt)} USD on ${descTimeFormat(stats.lowest.date)}.`;
+    and the lowest ${label} was ${descAmtFormat(stats.lowest.amt)} USD on ${descTimeFormat(stats.lowest.date)}.`;
 };
 
 export const chartDescription = data => {
