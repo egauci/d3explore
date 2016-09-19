@@ -2,7 +2,7 @@ import viewport from 'viewport-event';
 import tirLine, {setLineHighlight} from './tir-line';
 import tirBar, {setBarHighlight} from './tir-bar';
 import getData from './tirdata';
-import {tirSelection, types, period, chartType, curve, highlight, chartDescription} from './helpers';
+import {tirSelection, types, period, chartType, curve, highlight, chartDescription, resetHighlight} from './helpers';
 
 
 export default function(stop) {
@@ -50,7 +50,12 @@ export default function(stop) {
       }
       for (let [k, v] of types) {
         const dtype = v.checked ? '' : 'none';
-        document.querySelector(`#${k}-hibutton-ctr`).style.display = dtype;
+        document.querySelector(`#${k}-highlight-option`).style.display = dtype;
+        if (!v.checked && k === highlight) {
+          document.querySelector('#highlight-select').value = 'none';
+          oldHighlight = null;
+          resetHighlight();
+        }
       }
       const svg = document.querySelector('#d3-target > svg:first-of-type');
       svg.parentElement.removeChild(svg);
