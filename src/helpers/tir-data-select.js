@@ -57,6 +57,8 @@ const curveOpts = [
   // {val: 'curveStepBefore', label: 'Step Before'}
 ];
 
+let resetHighlight;
+
 /* eslint max-statements: 0 */
 const tirSelection = (container1, container2, callback) => {
   const ctOuter = document.createElement('div');
@@ -104,33 +106,32 @@ const tirSelection = (container1, container2, callback) => {
   const hihdr = document.createElement('h2');
   hihdr.appendChild(document.createTextNode('Hilight a series'));
   hiInner.appendChild(hihdr);
-  const hibtns = document.createElement('div');
-  hibtns.className = 'highlight-buttons';
+  const hibtns = document.createElement('select');
+  hibtns.className = 'highlight-select';
+  hibtns.id = 'highlight-select';
+  hibtns.setAttribute('aria-label', 'Highlight a Series');
   hiInner.appendChild(hibtns);
+  const noneOpt = document.createElement('option');
+  noneOpt.value = 'none';
+  if (highlight === 'none') {
+    noneOpt.selected = true;
+  }
+  noneOpt.appendChild(document.createTextNode('No Highlight'));
+  hibtns.appendChild(noneOpt);
 
   for (let [k, v] of types) {
-    const bctr = document.createElement('div');
-    bctr.className = 'highlight-button';
-    const btn = document.createElement('button');
-    const id = `${k}-hibutton`;
-    bctr.id = `${id}-ctr`;
-    btn.id = id;
-    btn.className = id;
-    btn.dataset.type = k;
-    const lbl = document.createElement('label');
-    lbl.htmlFor = id;
-    lbl.appendChild(document.createTextNode(v.label));
-    bctr.appendChild(btn);
-    bctr.appendChild(lbl);
-    hibtns.appendChild(bctr);
+    const opt = document.createElement('option');
+    if (highlight === k) {
+      opt.selected = true;
+    }
+    opt.value = k;
+    opt.id = `${k}-highlight-option`;
+    opt.appendChild(document.createTextNode(v.label));
+    hibtns.appendChild(opt);
   }
 
-  hibtns.addEventListener('click', e => {
-    if (e.target.nodeName !== 'BUTTON') {
-      return;
-    }
-    const newhilight = e.target.dataset.type;
-    highlight = highlight === newhilight ? null : e.target.dataset.type;
+  hibtns.addEventListener('change', e => {
+    highlight = e.target.value === 'none' ? null : e.target.value;
     callback();
   });
 
@@ -207,4 +208,8 @@ const tirSelection = (container1, container2, callback) => {
   });
 };
 
-export {tirSelection, types, period, chartType, curve, highlight};
+resetHighlight = () => {
+  highlight = null;
+};
+
+export {tirSelection, types, period, chartType, curve, highlight, resetHighlight};
