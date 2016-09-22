@@ -1,3 +1,7 @@
+html {
+  font-family: Arial, sans-serif;
+}
+
 h1 {
   font-size: 1.4em;
   font-weight: bold;
@@ -105,6 +109,9 @@ h1 {
 
 .chart-1.line-1.line-2, .chart-1.line-1.tbar-1 {
   border: 1px solid #ddd;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  border-right-width: 0;
 }
 
 .chart-options, .chart-options * {
@@ -205,4 +212,5 @@ h2 {
   left: 10px;
   width: auto;
   height: auto;
+  outline: 2px solid #6da003;
 }

@@ -32,7 +32,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     }
   });
 
-  const margin = {top: 130 - (25 * (3 - keys.length)), right: 30, bottom: 30, left: 40},
+  const margin = {top: 130 - (25 * (3 - keys.length)), right: 20, bottom: 30, left: 40},
     width = targetWidth - margin.left - margin.right,
     height = targetHeight - margin.top - margin.bottom;
 
@@ -98,9 +98,17 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .attr('class', 'chart-1 line-1 tbar-1')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom)
-      .style('background', '#f8f5ed')
+      .style('background', 'white')
       ;
   defs(svgTop);
+
+  svgTop
+    .append('rect')
+    .attr('fill', '#f8f5ed')
+    .attr('width', width)
+    .attr('height', height + margin.top)
+    .attr('transform', `translate(${margin.left}, 0)`)
+  ;
 
   // the "down-line" from the legend to the Y axis. Draw it here so it is
   // behind the chart.
