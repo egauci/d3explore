@@ -3,7 +3,7 @@ const types = new Map([
     'available',
     {
       label: 'Opening Available',
-      color: '#6c54a1',
+      color: '#6c2b46',
       checked: true
     }
   ],
@@ -11,7 +11,7 @@ const types = new Map([
     'ledger',
     {
       label: 'Closing Ledger',
-      color: '#800055',
+      color: '#285c4d',
       checked: true
     }
   ],
@@ -19,7 +19,15 @@ const types = new Map([
     'booked',
     {
       label: 'Closing Collected',
-      color: '#488074',
+      color: '#00698c',
+      checked: true
+    }
+  ],
+  [
+    'imaginary',
+    {
+      label: 'Offset',
+      color: '#ce4c00',
       checked: true
     }
   ]
@@ -58,6 +66,7 @@ const curveOpts = [
 ];
 
 let resetHighlight;
+let hibtns;
 
 /* eslint max-statements: 0 */
 const tirSelection = (container1, container2, callback) => {
@@ -106,7 +115,7 @@ const tirSelection = (container1, container2, callback) => {
   const hihdr = document.createElement('h2');
   hihdr.appendChild(document.createTextNode('Hilight a series'));
   hiInner.appendChild(hihdr);
-  const hibtns = document.createElement('select');
+  hibtns = document.createElement('select');
   hibtns.className = 'highlight-select';
   hibtns.id = 'highlight-select';
   hibtns.setAttribute('aria-label', 'Highlight a Series');
@@ -210,6 +219,7 @@ const tirSelection = (container1, container2, callback) => {
 
 resetHighlight = () => {
   highlight = null;
+  hibtns.value = 'none';
 };
 
 export {tirSelection, types, period, chartType, curve, highlight, resetHighlight};

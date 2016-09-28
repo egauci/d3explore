@@ -15,7 +15,9 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     {lineClass: 'ledger-line', symClass: 'ledger-symbol',
                    sym: d3.symbolTriangle, dataKey: 'ledger', label: 'Closing Ledger'},
     {lineClass: 'booked-line', symClass: 'booked-symbol',
-                   sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'}
+                   sym: d3.symbolCircle, dataKey: 'booked', label: 'Closing Collected'},
+    {lineClass: 'imaginary-line', symClass: 'imaginary-symbol',
+                  sym: d3.symbolDiamond, dataKey: 'imaginary', label: 'Offset'}
   ];
 
   let keys = [];
@@ -27,7 +29,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     }
   });
 
-  const margin = {top: 130 - (25 * (3 - keys.length)), right: 20, bottom: 30, left: 40},
+  const margin = {top: 160 - (25 * (4 - keys.length)), right: 40, bottom: 30, left: 50},
     width = targetWidth - margin.left - margin.right,
     height = targetHeight - margin.top - margin.bottom;
 
@@ -47,7 +49,7 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     ;
 
   let interval = 1;
-  while (width / (days - 1) * interval < 50) {
+  while (width / (days - 1) * interval < 70) {
     interval += 1;
   }
 
@@ -83,10 +85,15 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     .x(d => x(d.date))
     .y(d => y(d.booked));
 
+  const imaginaryLine = d3.line()
+    .x(d => x(d.date))
+    .y(d => y(d.imaginary));
+
   const thelines = {
     available: availableLine,
     ledger: ledgerLine,
-    booked: bookedLine
+    booked: bookedLine,
+    imaginary: imaginaryLine
   };
 
   // const area = curve === 'none' ? null : d3.area()
@@ -185,9 +192,9 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
   const showLegend = function(val) {
     hideLegend();
     const legendWidth = 300;
-    const legendHeight = margin.top - 10;
+    const legendHeight = margin.top - 15;
     let left = Math.max(0, x(val.date) + margin.left - legendWidth / 2);
-    left = Math.min(width + margin.left + margin.right - legendWidth, left);
+    left = Math.min(width + margin.left + margin.right - (legendWidth + 2), left);
     legend = svgTop.insert('g', 'g')
       .attr('class', 'legend');
     legend

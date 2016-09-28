@@ -63,4 +63,25 @@ export const defs = svg => {
         .attr('height', '100%')
         .attr('fill', 'url(#pattern-booked)')
       ;
+  svgDefs.append('pattern')
+      .attr('id', 'pattern-imaginary')
+      .attr('width', '3')
+      .attr('height', '3')
+      .attr('patternUnits', 'userSpaceOnUse')
+      .attr('patternTransform', 'rotate(180)')
+      .append('rect')
+        .attr('width', '2')
+        .attr('height', '3')
+        .attr('transform', 'translate(0,0)')
+        .attr('fill', 'white')
+      ;
+  svgDefs.append('mask')
+      .attr('id', 'mask-imaginary')
+      .append('rect')
+        .attr('x', '0')
+        .attr('y', '0')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('fill', 'url(#pattern-imaginary)')
+      ;
 };

@@ -38,6 +38,24 @@ h1 {
   shape-rendering: crispEdges;
 }
 
+.chart-1 .axis text {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  fill: #555;
+}
+
+.chart-1 .y.axis text {
+  font-size: 18px;
+}
+
+.chart-1 .x.axis text {
+  font-size: 16px;
+}
+
+.chart-1 .tick line {
+  stroke: #555;
+}
+
 .chart-1 .axis path, .x.axis.line {
   stroke: #d3d3d3;
 }
@@ -48,20 +66,27 @@ h1 {
 
 .available-line {
   fill: none;
-  stroke: rgb(108, 84, 161);
+  stroke: #6c2b46;
   stroke-width: 4px;
 }
 
 .ledger-line {
   fill: none;
-  stroke: rgb(128, 0, 85);
+  stroke: #285c4d;
   stroke-width: 4px;
 }
 
 .booked-line {
   fill: none;
-  stroke: rgb(72, 128, 116);
+  stroke: #00698c;
   stroke-width: 4px
+}
+
+
+.imaginary-line {
+  fill: none;
+  stroke: #ce4c00;
+  stroke-width: 4px;
 }
 
 .legend-line, .legend-dateline {
@@ -73,27 +98,35 @@ h1 {
 }
 
 .available-symbol {
-  fill: rgb(108, 84, 161);
+  fill: #ae2573;
 }
 
 .available-hibutton {
-  background: rgb(108, 84, 161);
+  background: #ae2573;
 }
 
 .booked-symbol {
-  fill: rgb(72, 128, 116);
+  fill: #0095c8;
+}
+
+.imaginary-symbol {
+  fill: #ed8800;
 }
 
 .booked-hibutton {
-  background: rgb(72, 128, 116);
+  background: #0095c8;
 }
 
 .ledger-symbol {
-  fill: rgb(128, 0, 85);
+  fill: #46a033;
 }
 
 .ledger-hibutton {
-  background: rgb(128, 0, 85);
+  background: #46a033;
+}
+
+.imaginary-hibutton {
+  background: #ed8800;
 }
 
 .available-symbol:focus, .booked-symbol:focus, .ledger-symbol:focus,
@@ -165,15 +198,24 @@ h2 {
 }
 
 .average-area {
-  fill: black;
-  opacity: 0.2;
+  fill: #b7e2f5;
+  opacity: 0.7;
 }
 
 .average-line {
   fill: none;
-  stroke: black;
+  stroke: #555;
   stroke-width: 2;
-  opacity: 0.5;
+  opacity: 0.7;
+}
+
+.one-bar {
+  opacity: 1;
+  transition: opacity ease-out 0.3s;
+}
+
+.hide-bars .one-bar {
+  opacity: 0;
 }
 
 .tir-period > div {

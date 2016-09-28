@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import viewport from 'viewport-event';
-import {defs, dateAriaLabel} from './helpers/';
+import {defs, dateAriaLabel, resetHighlight} from './helpers/';
 
 let oldListener;
 
@@ -18,7 +18,8 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   const itemList = [
     {symClass: 'available-symbol', sym: d3.symbolSquare, dataKey: 'available', label: 'Open Available'},
     {symClass: 'ledger-symbol', sym: d3.symbolSquare, dataKey: 'ledger', label: 'Closing Ledger'},
-    {symClass: 'booked-symbol', sym: d3.symbolSquare, dataKey: 'booked', label: 'Closing Collected'}
+    {symClass: 'booked-symbol', sym: d3.symbolSquare, dataKey: 'booked', label: 'Closing Collected'},
+    {symClass: 'imaginary-symbol', sym: d3.symbolDiamond, dataKey: 'imaginary', label: 'Offset'}
   ];
 
   let x1Domain = [];
@@ -32,7 +33,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
     }
   });
 
-  const margin = {top: 130 - (25 * (3 - keys.length)), right: 20, bottom: 30, left: 40},
+  const margin = {top: 160 - (25 * (4 - keys.length)), right: 30, bottom: 30, left: 50},
     width = targetWidth - margin.left - margin.right,
     height = targetHeight - margin.top - margin.bottom;
 
@@ -64,9 +65,15 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .y(d => y(d.average))
       .curve(d3[curve])
       ;
+  const area = curve === 'none' ? null : d3.area()
+    .x(d => x0(d.date) + x0.bandwidth() / 2)
+    .y0(() => height)
+    .y1(d => y(d.average))
+    .curve(d3[curve])
+    ;
 
   let interval = 1;
-  while (width / days * interval < 50) {
+  while (width / days * interval < 70) {
     interval += 1;
   }
 
@@ -133,6 +140,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   const svg = svgTop
       .append('g')
       .attr('id', 'main-chart')
+      .attr('class', 'main-chart')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
   yValues.forEach((yval, i) => {
@@ -191,9 +199,9 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
   const showLegend = function(val) {
     hideLegend();
     const legendWidth = 300;
-    const legendHeight = margin.top - 10;
+    const legendHeight = margin.top - 15;
     let left = Math.max(0, x0(val.date) + margin.left + x0.bandwidth() / 2 - legendWidth / 2);
-    left = Math.min(width + margin.left + margin.right - legendWidth, left);
+    left = Math.min(width + margin.left + margin.right - (legendWidth + 2), left);
     legend = svgTop.insert('g', 'g')
       .attr('class', 'legend');
     legend
@@ -304,11 +312,25 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
       .text(dateAriaLabel)
     ;
 
-  if (avgLine) {
+  const toggleHide = () => {
+    document.querySelector('#main-chart').classList.toggle('hide-bars');
+    d3.selectAll('.one-bar')
+      .style('opacity', '');
+    resetHighlight();
+  };
+
+  if (area) {
+    svg.append('path')
+      .data([data])
+      .attr('class', 'average-area')
+      .attr('d', area)
+      .on('click', toggleHide)
+      ;
     svg.append('path')
       .data([data])
       .attr('class', 'average-line')
       .attr('d', avgLine)
+      .on('click', toggleHide)
       ;
   }
 

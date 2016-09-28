@@ -20,7 +20,8 @@ export default function({days = 120, min = 10000000, max = 50000000, minvar = 0.
     const available = randInRange(min, max);
     const ledger = available * variance(minvar, maxvar);
     const booked = available * variance(minvar, maxvar);
-    data.push({date, available, ledger, booked});
+    const imaginary = available * variance(minvar, maxvar);
+    data.push({date, available, ledger, booked, imaginary});
     dt = dt.add(1, 'days');
     days -= 1;
   }
