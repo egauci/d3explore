@@ -60,8 +60,8 @@ export default function(targetWidth, targetHeight, {amtMin, amtMax, days, data: 
     .tickValues(xValues)
     ;
 
-  const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
-  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
+  const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked, d.imaginary))) * 0.9;
+  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked, d.imaginary)));
   let yValues = [];
   for (let i = amtMin; i <= yMax; i += 5000000) {
     yValues = [...yValues, i];

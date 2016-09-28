@@ -87,7 +87,7 @@ export default function (targetWidth, targetHeight, {amtMax, days, data: odata,
 
   // const yMin = Math.min(amtMin, d3.min(data, d => Math.min(d.available, d.ledger, d.booked)));
   const yMin = 0;
-  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked)));
+  const yMax = Math.max(amtMax, d3.max(data, d => Math.max(d.available, d.ledger, d.booked, d.imaginary)));
   let yValues = [];
   for (let i = 0; i <= yMax; i += 5000000) {
     yValues = [...yValues, i];
