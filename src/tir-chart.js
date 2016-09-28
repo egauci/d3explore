@@ -11,6 +11,7 @@ export default function(stop) {
   let targetHeight;
   let oldHeight;
   let oldHighlight = highlight;
+  let oldChartType = chartType;
 
   const amtMin = 10000000;
   const amtMax = 50000000;
@@ -42,12 +43,16 @@ export default function(stop) {
     let data = fullData.slice(0 - days);
     fillChartInfo(data);
     tirSelection(options1, options2, () => {
-      if (highlight !== oldHighlight) {
+      if (chartType === oldChartType && highlight !== oldHighlight) {
         const seth = chartType !== 'line' ? setBarHighlight : setLineHighlight;
-        seth(highlight);
-        oldHighlight = highlight;
-        return;
+        if (seth) {
+          seth(highlight);
+          oldHighlight = highlight;
+          return;
+        }
       }
+      oldChartType = chartType;
+      oldHighlight = highlight;
       for (let [k, v] of types) {
         const dtype = v.checked ? '' : 'none';
         document.querySelector(`#${k}-highlight-option`).style.display = dtype;
