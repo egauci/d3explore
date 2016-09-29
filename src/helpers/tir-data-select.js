@@ -3,7 +3,7 @@ const types = new Map([
     'available',
     {
       label: 'Opening Available',
-      color: '#6c2b46',
+      color: '#ae2573',
       checked: true
     }
   ],
@@ -11,7 +11,7 @@ const types = new Map([
     'ledger',
     {
       label: 'Closing Ledger',
-      color: '#285c4d',
+      color: '#46a033',
       checked: true
     }
   ],
@@ -19,7 +19,7 @@ const types = new Map([
     'booked',
     {
       label: 'Closing Collected',
-      color: '#00698c',
+      color: '#0095c8',
       checked: true
     }
   ],
@@ -27,7 +27,7 @@ const types = new Map([
     'imaginary',
     {
       label: 'Offset',
-      color: '#ce4c00',
+      color: '#ed8800',
       checked: true
     }
   ]
